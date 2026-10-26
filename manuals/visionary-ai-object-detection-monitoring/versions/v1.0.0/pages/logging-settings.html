@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      name="description"
+      content="SICK Visionary AI Object Detection Monitoring operator and application engineer manual v1.0.0"
+    />
+    <title>
+      Logging Settings · Visionary AI Object Detection Monitoring · SICK
+    </title>
+    <link
+      rel="icon"
+      type="image/webp"
+      href="../assets/images/brand/sick-s-logo.webp"
+    />
+    <link rel="stylesheet" href="../assets/css/manual.css" />
+  </head>
+  <body data-page="logging-settings.html">
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="brand">
+          <a href="../index.html"
+            ><img src="../assets/images/brand/sick-logo.svg" alt="SICK"
+          /></a>
+          <h1>Visionary AI Object Detection Monitoring</h1>
+          <p>End-User Manual · v1.0.0<br />Application · v1.0.0<br />SICK</p>
+        </div>
+        <nav class="nav" aria-label="Manual sections">
+          <div class="nav-group">Start here</div>
+          <a href="../index.html" data-current="index.html" class=""
+            >Overview & Quick Start</a
+          ><a href="how-it-works.html" data-current="how-it-works.html" class=""
+            >How the System Works</a
+          >
+          <div class="nav-group">Use the application</div>
+          <a href="monitoring.html" data-current="monitoring.html" class=""
+            >Monitoring Page</a
+          ><a
+            href="network-models.html"
+            data-current="network-models.html"
+            class=""
+            >Network Models Page</a
+          ><a
+            href="image-collection.html"
+            data-current="image-collection.html"
+            class=""
+            >Image Collection Page</a
+          ><a
+            href="log-monitoring.html"
+            data-current="log-monitoring.html"
+            class=""
+            >Log Monitoring Page</a
+          >
+          <div class="nav-group">Configure the application</div>
+          <a href="settings.html" data-current="settings.html" class=""
+            >Settings Overview & Backup</a
+          ><a
+            href="camera-settings.html"
+            data-current="camera-settings.html"
+            class=""
+            >Camera Settings</a
+          ><a
+            href="live-streaming-settings.html"
+            data-current="live-streaming-settings.html"
+            class=""
+            >Live Streaming Settings</a
+          ><a
+            href="object-detection-settings.html"
+            data-current="object-detection-settings.html"
+            class=""
+            >Object Detection Settings</a
+          ><a
+            href="mqtt-settings.html"
+            data-current="mqtt-settings.html"
+            class=""
+            >MQTT Client Settings</a
+          ><a
+            href="logging-settings.html"
+            data-current="logging-settings.html"
+            class="active"
+            >Logging Settings</a
+          ><a href="license.html" data-current="license.html" class=""
+            >License Manager</a
+          >
+          <div class="nav-group">External access & support</div>
+          <a href="integrations.html" data-current="integrations.html" class=""
+            >Integration & Data Outputs</a
+          ><a href="rest-api.html" data-current="rest-api.html" class=""
+            >REST API Reference</a
+          ><a
+            href="troubleshooting.html"
+            data-current="troubleshooting.html"
+            class=""
+            >Troubleshooting</a
+          ><a
+            href="quick-reference.html"
+            data-current="quick-reference.html"
+            class=""
+            >Quick Reference</a
+          >
+        </nav>
+      </aside>
+      <main class="main">
+        <header class="topbar">
+          <button class="mobile-menu" id="mobileMenu" type="button">
+            ☰ Menu
+          </button>
+          <div class="title">Logging Settings</div>
+          <div class="meta">Application v1.0.0 · Documentation v1.0.0</div>
+        </header>
+        <article class="content">
+          <div class="kicker">Settings → Logging</div>
+          <h1>Logging Settings</h1>
+          <p class="page-intro">
+            Choose the app’s logging verbosity and bounded log storage
+            parameters. For daily operation, INFO is a practical starting point.
+          </p>
+          <figure class="figure">
+            <img
+              loading="lazy"
+              src="../assets/images/ui/logging-settings_1.webp"
+              alt="Logging Settings tab"
+            />
+            <figcaption>Logging Settings tab — click to enlarge.</figcaption>
+          </figure>
+          <h2>Logging fields</h2>
+          <table class="doc-table">
+            <thead>
+              <tr>
+                <th>Setting</th>
+                <th>Meaning</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><b>Log level</b></td>
+                <td>
+                  Set <code>ERROR</code>, <code>WARNING</code>,
+                  <code>INFO</code> or <code>DEBUG</code>. Optimized
+                  <b>INFO</b>.
+                </td>
+              </tr>
+              <tr>
+                <td><b>Maximum size (MB)</b></td>
+                <td>
+                  Limit for the application’s log-file size, 1–50 MB in the UI.
+                  Optimized <b>5 MB</b>.
+                </td>
+              </tr>
+              <tr>
+                <td><b>Maximum entries</b></td>
+                <td>
+                  Memory/buffer entry count, 100–10,000 in the UI. Optimized
+                  <b>1,000</b>.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <h2>How levels work</h2>
+          <table class="doc-table">
+            <thead>
+              <tr>
+                <th>Chosen level</th>
+                <th>Messages included</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>ERROR</td>
+                <td>Shows only errors.</td>
+              </tr>
+              <tr>
+                <td>WARNING</td>
+                <td>Shows warnings and errors.</td>
+              </tr>
+              <tr>
+                <td>INFO</td>
+                <td>Shows routine information, warnings and errors.</td>
+              </tr>
+              <tr>
+                <td>DEBUG</td>
+                <td>
+                  Shows detailed debug information and all higher severities.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <h2>Recommended operation</h2>
+          <p>
+            Keep <b>INFO</b> during normal production. Temporarily set DEBUG for
+            diagnosis, then restore INFO to reduce log noise. Save and reload
+            after making application logging changes. The
+            <b>Log Monitoring</b> page additionally has its own display filters
+            and CSK device logger controls; these are not the same as
+            application logging settings.
+          </p>
+          <div class="callout warn">
+            <b>Retention:</b> Maximum entries and log-file size are limits, not
+            a substitute for central archiving. Copy important diagnostic
+            evidence before it is overwritten or discarded.
+          </div>
+          <div class="footnav">
+            <span>← <a href="mqtt-settings.html">MQTT Client Settings</a></span
+            ><span><a href="license.html">License Manager</a> →</span>
+          </div>
+          <footer class="footer">
+            © SICK · Visionary AI Object Detection Monitoring · Application
+            v1.0.0 · Documentation v1.0.0.<br />
+          </footer>
+        </article>
+      </main>
+    </div>
+    <script src="../assets/js/manual.js"></script>
+  </body>
+</html>

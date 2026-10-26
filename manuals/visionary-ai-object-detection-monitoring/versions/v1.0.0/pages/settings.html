@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      name="description"
+      content="SICK Visionary AI Object Detection Monitoring operator and application engineer manual v1.0.0"
+    />
+    <title>
+      Settings Overview &amp; Backup · Visionary AI Object Detection Monitoring
+      · SICK
+    </title>
+    <link
+      rel="icon"
+      type="image/webp"
+      href="../assets/images/brand/sick-s-logo.webp"
+    />
+    <link rel="stylesheet" href="../assets/css/manual.css" />
+  </head>
+  <body data-page="settings.html">
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="brand">
+          <a href="../index.html"
+            ><img src="../assets/images/brand/sick-logo.svg" alt="SICK"
+          /></a>
+          <h1>Visionary AI Object Detection Monitoring</h1>
+          <p>End-User Manual · v1.0.0<br />Application · v1.0.0<br />SICK</p>
+        </div>
+        <nav class="nav" aria-label="Manual sections">
+          <div class="nav-group">Start here</div>
+          <a href="../index.html" data-current="index.html" class=""
+            >Overview & Quick Start</a
+          ><a href="how-it-works.html" data-current="how-it-works.html" class=""
+            >How the System Works</a
+          >
+          <div class="nav-group">Use the application</div>
+          <a href="monitoring.html" data-current="monitoring.html" class=""
+            >Monitoring Page</a
+          ><a
+            href="network-models.html"
+            data-current="network-models.html"
+            class=""
+            >Network Models Page</a
+          ><a
+            href="image-collection.html"
+            data-current="image-collection.html"
+            class=""
+            >Image Collection Page</a
+          ><a
+            href="log-monitoring.html"
+            data-current="log-monitoring.html"
+            class=""
+            >Log Monitoring Page</a
+          >
+          <div class="nav-group">Configure the application</div>
+          <a href="settings.html" data-current="settings.html" class="active"
+            >Settings Overview & Backup</a
+          ><a
+            href="camera-settings.html"
+            data-current="camera-settings.html"
+            class=""
+            >Camera Settings</a
+          ><a
+            href="live-streaming-settings.html"
+            data-current="live-streaming-settings.html"
+            class=""
+            >Live Streaming Settings</a
+          ><a
+            href="object-detection-settings.html"
+            data-current="object-detection-settings.html"
+            class=""
+            >Object Detection Settings</a
+          ><a
+            href="mqtt-settings.html"
+            data-current="mqtt-settings.html"
+            class=""
+            >MQTT Client Settings</a
+          ><a
+            href="logging-settings.html"
+            data-current="logging-settings.html"
+            class=""
+            >Logging Settings</a
+          ><a href="license.html" data-current="license.html" class=""
+            >License Manager</a
+          >
+          <div class="nav-group">External access & support</div>
+          <a href="integrations.html" data-current="integrations.html" class=""
+            >Integration & Data Outputs</a
+          ><a href="rest-api.html" data-current="rest-api.html" class=""
+            >REST API Reference</a
+          ><a
+            href="troubleshooting.html"
+            data-current="troubleshooting.html"
+            class=""
+            >Troubleshooting</a
+          ><a
+            href="quick-reference.html"
+            data-current="quick-reference.html"
+            class=""
+            >Quick Reference</a
+          >
+        </nav>
+      </aside>
+      <main class="main">
+        <header class="topbar">
+          <button class="mobile-menu" id="mobileMenu" type="button">
+            ☰ Menu
+          </button>
+          <div class="title">Settings Overview &amp; Backup</div>
+          <div class="meta">Application v1.0.0 · Documentation v1.0.0</div>
+        </header>
+        <article class="content">
+          <div class="kicker">System configuration</div>
+          <h1>Settings Overview & Backup</h1>
+          <p class="page-intro">
+            Use the <b>Settings</b> page to view or adjust configuration. Each
+            settings group has a tab and an Edit icon that opens a side panel.
+            Configure only one group at a time and reload when requested.
+          </p>
+          <h2>Settings tabs</h2>
+          <table class="doc-table">
+            <thead>
+              <tr>
+                <th>Group</th>
+                <th>Purpose</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><b>Camera</b></td>
+                <td>
+                  Camera acquisition, color balance, auto exposure, depth
+                  validation, histogram equalization and optional advanced
+                  device SDK overrides.
+                  <a href="camera-settings.html">Details</a>
+                </td>
+              </tr>
+              <tr>
+                <td><b>Live streaming</b></td>
+                <td>
+                  Preview capture rate, browser polling rate, output width and
+                  JPEG quality, freshness and request timeouts.
+                  <a href="live-streaming-settings.html">Details</a>
+                </td>
+              </tr>
+              <tr>
+                <td><b>Object detection</b></td>
+                <td>
+                  Inference cycle and non-maximum suppression (NMS) options.
+                  <a href="object-detection-settings.html">Details</a>
+                </td>
+              </tr>
+              <tr>
+                <td><b>MQTT client</b></td>
+                <td>
+                  External broker connection and optional publication of
+                  detection results. <a href="mqtt-settings.html">Details</a>
+                </td>
+              </tr>
+              <tr>
+                <td><b>Logging</b></td>
+                <td>
+                  Log verbosity, maximum entries and file-size setting.
+                  <a href="logging-settings.html">Details</a>
+                </td>
+              </tr>
+              <tr>
+                <td><b>Image collection settings</b></td>
+                <td>
+                  Interval and max images are configured from the
+                  <a href="image-collection.html">Image Collection</a> start
+                  panel instead of having their own Settings tab.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <h2>Changing a setting</h2>
+          <ol class="steps">
+            <li>Open <b>Settings</b> from the application menu.</li>
+            <li>
+              Select the relevant tab (Camera, Live streaming, Object detection,
+              MQTT client or Logging).
+            </li>
+            <li>
+              Click the <b>edit/pencil icon</b> beside that group title to open
+              the edit side panel.
+            </li>
+            <li>
+              Change the required parameters and select <b>Save</b>. Read and
+              resolve validation messages if present.
+            </li>
+            <li>
+              If the header indicates a reload is required, choose
+              <b>⋮ → Reload app</b>, confirm and verify App ready returns.
+            </li>
+          </ol>
+          <div class="callout warn">
+            <b>When changes apply:</b> Camera, live-preview, detection, MQTT,
+            logging and model changes are persisted but generally take effect
+            <b>after reload</b>. The image-collection interval/max-image
+            parameters are applied immediately when saved. Do not reload the
+            camera during an active process without coordination.
+          </div>
+          <h2 id="import-backup">Export and import settings</h2>
+          <p>
+            At the top of Settings you can <b>Export settings</b> to a JSON
+            backup or choose a JSON file and click <b>Import settings</b>.
+            Import prompts for confirmation, applies valid configuration, then
+            offers <b>Reload app</b>.
+          </p>
+          <ol class="steps">
+            <li>
+              Before changes, use <b>Export settings</b> to create a rollback
+              copy of the current configuration.
+            </li>
+            <li>
+              Ensure <b>all referenced model files</b> already exist on the
+              camera under their expected model IDs. A backup contains model
+              <i>configuration</i>, not the model JSON file bytes.
+            </li>
+            <li>
+              Choose a compatible backup in the file selector, click
+              <b>Import settings</b> and confirm.
+            </li>
+            <li>
+              Wait for the success message; if the import fails, read the error
+              and correct the prerequisite rather than repeatedly restarting.
+            </li>
+            <li>
+              Click <b>Reload app</b> and check the model list and Monitoring
+              page. Export a new snapshot once commissioned.
+            </li>
+          </ol>
+          <p>
+            <a
+              class="download"
+              href="../downloads/optimized-settings_v1.0.0.json"
+              download
+              >↓ Download supplied optimized settings v1.0.0</a
+            >
+          </p>
+          <h3>Contents of the supplied optimized settings</h3>
+          <table class="doc-table">
+            <thead>
+              <tr>
+                <th>Area</th>
+                <th>Supplied value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Camera</td>
+                <td>
+                  10 FPS, HDR, auto exposure, histogram equalization; depth map
+                  disabled.
+                </td>
+              </tr>
+              <tr>
+                <td>Preview</td>
+                <td>
+                  200 ms capture / 200 ms browser poll, width 960 px, JPEG
+                  quality 70.
+                </td>
+              </tr>
+              <tr>
+                <td>Detection</td>
+                <td>
+                  1,000 ms inference cycle, NMS threshold 0.50, strategy NORMAL.
+                </td>
+              </tr>
+              <tr>
+                <td>MQTT</td>
+                <td>
+                  Disabled by default; topic <code>visionary/detections</code>,
+                  port 1883 when enabled.
+                </td>
+              </tr>
+              <tr>
+                <td>Logging</td>
+                <td>INFO, 1,000 entries, 5 MB.</td>
+              </tr>
+              <tr>
+                <td>Image collection</td>
+                <td>
+                  1,000 ms interval, maximum 4 new images per timed collection.
+                </td>
+              </tr>
+              <tr>
+                <td>Runtime</td>
+                <td>
+                  MAX_MODELS = 1 active model; MAX_STORED_MODELS = 100;
+                  MAX_MODEL_BYTES = 100,000,000.
+                </td>
+              </tr>
+              <tr>
+                <td>Models</td>
+                <td>Human enabled (recognition 1,000 ms; holding 3,000 ms).</td>
+              </tr>
+            </tbody>
+          </table>
+          <h3>Backup limits and safe handling</h3>
+          <p>
+            The settings JSON contains configuration values, runtime limits,
+            model definitions and potentially saved <b>MQTT credentials</b>. It
+            does <b>not</b> contain full trained model binaries or captured
+            dataset images. Keep backups in an access-controlled location. The
+            imported backup does not override the device’s existing saved
+            stop/resume monitoring preference. Import is rejected during a
+            running timed image-collection session and a persistence failure is
+            rolled back.
+          </p>
+          <div class="footnav">
+            <span>← <a href="log-monitoring.html">Log Monitoring Page</a></span
+            ><span><a href="camera-settings.html">Camera Settings</a> →</span>
+          </div>
+          <footer class="footer">
+            © SICK · Visionary AI Object Detection Monitoring · Application
+            v1.0.0 · Documentation v1.0.0.<br />
+          </footer>
+        </article>
+      </main>
+    </div>
+    <script src="../assets/js/manual.js"></script>
+  </body>
+</html>

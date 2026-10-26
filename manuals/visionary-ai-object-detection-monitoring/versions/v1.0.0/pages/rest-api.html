@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      name="description"
+      content="SICK Visionary AI Object Detection Monitoring operator and application engineer manual v1.0.0"
+    />
+    <title>
+      REST API Reference · Visionary AI Object Detection Monitoring · SICK
+    </title>
+    <link
+      rel="icon"
+      type="image/webp"
+      href="../assets/images/brand/sick-s-logo.webp"
+    />
+    <link rel="stylesheet" href="../assets/css/manual.css" />
+  </head>
+  <body data-page="rest-api.html">
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="brand">
+          <a href="../index.html"
+            ><img src="../assets/images/brand/sick-logo.svg" alt="SICK"
+          /></a>
+          <h1>Visionary AI Object Detection Monitoring</h1>
+          <p>End-User Manual · v1.0.0<br />Application · v1.0.0<br />SICK</p>
+        </div>
+        <nav class="nav" aria-label="Manual sections">
+          <div class="nav-group">Start here</div>
+          <a href="../index.html" data-current="index.html" class=""
+            >Overview & Quick Start</a
+          ><a href="how-it-works.html" data-current="how-it-works.html" class=""
+            >How the System Works</a
+          >
+          <div class="nav-group">Use the application</div>
+          <a href="monitoring.html" data-current="monitoring.html" class=""
+            >Monitoring Page</a
+          ><a
+            href="network-models.html"
+            data-current="network-models.html"
+            class=""
+            >Network Models Page</a
+          ><a
+            href="image-collection.html"
+            data-current="image-collection.html"
+            class=""
+            >Image Collection Page</a
+          ><a
+            href="log-monitoring.html"
+            data-current="log-monitoring.html"
+            class=""
+            >Log Monitoring Page</a
+          >
+          <div class="nav-group">Configure the application</div>
+          <a href="settings.html" data-current="settings.html" class=""
+            >Settings Overview & Backup</a
+          ><a
+            href="camera-settings.html"
+            data-current="camera-settings.html"
+            class=""
+            >Camera Settings</a
+          ><a
+            href="live-streaming-settings.html"
+            data-current="live-streaming-settings.html"
+            class=""
+            >Live Streaming Settings</a
+          ><a
+            href="object-detection-settings.html"
+            data-current="object-detection-settings.html"
+            class=""
+            >Object Detection Settings</a
+          ><a
+            href="mqtt-settings.html"
+            data-current="mqtt-settings.html"
+            class=""
+            >MQTT Client Settings</a
+          ><a
+            href="logging-settings.html"
+            data-current="logging-settings.html"
+            class=""
+            >Logging Settings</a
+          ><a href="license.html" data-current="license.html" class=""
+            >License Manager</a
+          >
+          <div class="nav-group">External access & support</div>
+          <a href="integrations.html" data-current="integrations.html" class=""
+            >Integration & Data Outputs</a
+          ><a href="rest-api.html" data-current="rest-api.html" class="active"
+            >REST API Reference</a
+          ><a
+            href="troubleshooting.html"
+            data-current="troubleshooting.html"
+            class=""
+            >Troubleshooting</a
+          ><a
+            href="quick-reference.html"
+            data-current="quick-reference.html"
+            class=""
+            >Quick Reference</a
+          >
+        </nav>
+      </aside>
+      <main class="main">
+        <header class="topbar">
+          <button class="mobile-menu" id="mobileMenu" type="button">
+            ☰ Menu
+          </button>
+          <div class="title">REST API Reference</div>
+          <div class="meta">Application v1.0.0 · Documentation v1.0.0</div>
+        </header>
+        <article class="content">
+          <div class="kicker">External monitoring &amp; control</div>
+          <h1>REST API Reference</h1>
+          <p class="page-intro">
+            Service and application engineers can use the device’s
+            <b>Crown REST API</b> to read status, retrieve settings, update
+            configuration, operate models and obtain captured images. This
+            reference is derived from the provided v1.0.0 OpenAPI specification
+            and application source.
+          </p>
+          <p>
+            <a class="download" download href="../api/openapi.yaml"
+              >↓ Download complete OpenAPI v1.0.0 (YAML)</a
+            >
+          </p>
+          <h2 id="connection">Connection &amp; request format</h2>
+          <table class="doc-table">
+            <thead>
+              <tr>
+                <th>Topic</th>
+                <th>Details</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Base URL</td>
+                <td>
+                  <code>http://&lt;camera-ip&gt;/api/crown</code> (substitute
+                  device IP, scheme and port).
+                </td>
+              </tr>
+              <tr>
+                <td>Function endpoint</td>
+                <td>
+                  <code
+                    >POST
+                    /api/crown/AIObjectDetectionMonitoring/{function}</code
+                  >.
+                </td>
+              </tr>
+              <tr>
+                <td>Request content type</td>
+                <td>
+                  <code>Content-Type: application/json</code>. No-parameter
+                  functions accept <code>{}</code>.
+                </td>
+              </tr>
+              <tr>
+                <td>Function arguments</td>
+                <td>
+                  For functions with parameters, pass a <code>data</code> object
+                  such as <code>{"data":{"enabled":false}}</code>.
+                </td>
+              </tr>
+              <tr>
+                <td>Response envelope</td>
+                <td>
+                  <code
+                    >{"header":{"status":0,"message":"Ok"},"data":{"data":"…","success":true,"message":"OK"}}</code
+                  >.
+                </td>
+              </tr>
+              <tr>
+                <td>Nested JSON string</td>
+                <td>
+                  The inner <code>data.data</code> field often contains
+                  <b>another JSON document as a string</b>, requiring one more
+                  JSON parse.
+                </td>
+              </tr>
+              <tr>
+                <td>Failure handling</td>
+                <td>
+                  Check both <code>header.status</code> and
+                  <code>data.success</code>. App-level errors may still return
+                  HTTP 200; read <code>data.message</code>.
+                </td>
+              </tr>
+              <tr>
+                <td>Credentials/security</td>
+                <td>
+                  Use the authentication and network access controls configured
+                  on the target device; do not expose the API or camera to
+                  untrusted networks.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <h2 id="examples">Examples for service engineers</h2>
+          <h3>Check application status</h3>
+          <p>
+            Replace <code>CAMERA_IP</code> with your camera address; send the
+            no-parameter empty JSON object.
+          </p>
+          <pre><code>curl -s -X POST &quot;http://CAMERA_IP/api/crown/AIObjectDetectionMonitoring/getStatus&quot; \
+  -H &quot;Content-Type: application/json&quot; -d &#x27;{}&#x27;</code></pre>
+          <p>
+            When the response succeeds, decode the nested
+            <code>data.data</code> string to inspect <code>ready</code>,
+            <code>cameraConnected</code>, <code>monitoringEnabled</code>,
+            <code>workers</code>, license state and <code>reloadRequired</code>.
+          </p>
+          <h3>Stop monitoring</h3>
+          <pre><code>curl -s -X POST &quot;http://CAMERA_IP/api/crown/AIObjectDetectionMonitoring/setMonitoringEnabled&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#x27;{&quot;data&quot;:{&quot;enabled&quot;:false}}&#x27;</code></pre>
+          <p>
+            This saves the disabled preference and stops monitoring. To resume,
+            set <code>enabled</code> to <code>true</code>, then invoke
+            <code>reloadApps</code> because enabling does not immediately
+            restart inference from the API alone.
+          </p>
+          <h3>Change image collection options (partial settings update)</h3>
+          <pre><code>curl -s -X POST &quot;http://CAMERA_IP/api/crown/AIObjectDetectionMonitoring/updateSettings&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#x27;{&quot;data&quot;:{&quot;dataJSON&quot;:&quot;{\&quot;imageCollection\&quot;:{\&quot;intervalMs\&quot;:2000,\&quot;maxImages\&quot;:20}}&quot;}}&#x27;</code></pre>
+          <p>
+            For example, image-collection interval and maximum images apply
+            immediately after a successful save. Changing
+            camera/detection/model/MQTT/logging settings requires a reload.
+          </p>
+          <h3>Read and parse the nested response in Python</h3>
+          <pre><code>import json
+import urllib.request
+
+url = &quot;http://CAMERA_IP/api/crown/AIObjectDetectionMonitoring/getStatus&quot;
+req = urllib.request.Request(url, data=b&quot;{}&quot;,
+                             headers={&quot;Content-Type&quot;: &quot;application/json&quot;},
+                             method=&quot;POST&quot;)
+with urllib.request.urlopen(req, timeout=10) as response:
+    envelope = json.load(response)
+
+if envelope.get(&quot;header&quot;, {}).get(&quot;status&quot;) != 0:
+    raise RuntimeError(envelope.get(&quot;header&quot;))
+result = envelope.get(&quot;data&quot;, {})
+if not result.get(&quot;success&quot;):
+    raise RuntimeError(result.get(&quot;message&quot;))
+status = json.loads(result[&quot;data&quot;])
+print(status[&quot;ready&quot;], status[&quot;cameraConnected&quot;], status[&quot;monitoringEnabled&quot;])</code></pre>
+          <h2 id="all-functions">All available v1.0.0 REST functions</h2>
+          <p>
+            Every function below uses <b>POST</b> under the common
+            <code>/api/crown/AIObjectDetectionMonitoring/</code> prefix.
+          </p>
+          <table class="doc-table">
+            <thead>
+              <tr>
+                <th>Function</th>
+                <th>Group</th>
+                <th>Purpose</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>getStatus</code></td>
+                <td>Status and monitoring</td>
+                <td>Get the application status</td>
+              </tr>
+              <tr>
+                <td><code>setMonitoringEnabled</code></td>
+                <td>Status and monitoring</td>
+                <td>Stop or resume live camera view and object detection</td>
+              </tr>
+              <tr>
+                <td><code>getDeviceName</code></td>
+                <td>Status and monitoring</td>
+                <td>Get the device type name</td>
+              </tr>
+              <tr>
+                <td><code>getLiveFrame</code></td>
+                <td>Live preview</td>
+                <td>Get the latest live preview frame</td>
+              </tr>
+              <tr>
+                <td><code>getSettings</code></td>
+                <td>Settings</td>
+                <td>Get all settings</td>
+              </tr>
+              <tr>
+                <td><code>updateSettings</code></td>
+                <td>Settings</td>
+                <td>Update settings</td>
+              </tr>
+              <tr>
+                <td><code>exportSettings</code></td>
+                <td>Settings</td>
+                <td>Export a settings backup</td>
+              </tr>
+              <tr>
+                <td><code>importSettings</code></td>
+                <td>Settings</td>
+                <td>Import a settings backup</td>
+              </tr>
+              <tr>
+                <td><code>getCameraControls</code></td>
+                <td>Settings</td>
+                <td>Get the camera control schema</td>
+              </tr>
+              <tr>
+                <td><code>getNetworkModels</code></td>
+                <td>Network models</td>
+                <td>List network models</td>
+              </tr>
+              <tr>
+                <td><code>uploadNetworkModel</code></td>
+                <td>Network models</td>
+                <td>Upload a network model</td>
+              </tr>
+              <tr>
+                <td><code>updateNetworkModel</code></td>
+                <td>Network models</td>
+                <td>Update a network model configuration</td>
+              </tr>
+              <tr>
+                <td><code>updateNetworkModelFile</code></td>
+                <td>Network models</td>
+                <td>Replace a network model file</td>
+              </tr>
+              <tr>
+                <td><code>deleteNetworkModel</code></td>
+                <td>Network models</td>
+                <td>Delete a network model</td>
+              </tr>
+              <tr>
+                <td><code>startImageCollection</code></td>
+                <td>Image collection</td>
+                <td>Start a timed image collection</td>
+              </tr>
+              <tr>
+                <td><code>captureCollectionImage</code></td>
+                <td>Image collection</td>
+                <td>Capture one collection image</td>
+              </tr>
+              <tr>
+                <td><code>stopImageCollection</code></td>
+                <td>Image collection</td>
+                <td>Stop the timed image collection</td>
+              </tr>
+              <tr>
+                <td><code>getCollectionImages</code></td>
+                <td>Image collection</td>
+                <td>List collection images</td>
+              </tr>
+              <tr>
+                <td><code>prepareDatasetDownload</code></td>
+                <td>Image collection</td>
+                <td>Create a ZIP of selected images</td>
+              </tr>
+              <tr>
+                <td><code>acknowledgeDatasetDownload</code></td>
+                <td>Image collection</td>
+                <td>Remove the temporary dataset ZIP</td>
+              </tr>
+              <tr>
+                <td><code>deleteCollectionImages</code></td>
+                <td>Image collection</td>
+                <td>Delete selected collection images</td>
+              </tr>
+              <tr>
+                <td><code>reloadApps</code></td>
+                <td>System</td>
+                <td>Reload all apps</td>
+              </tr>
+            </tbody>
+          </table>
+          <h2 id="advanced">Special parameter formats</h2>
+          <table class="doc-table">
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>How it works</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>dataJSON</code></td>
+                <td>
+                  For <code>updateSettings</code>, <code>importSettings</code>,
+                  <code>updateNetworkModel</code> and
+                  <code>updateNetworkModelFile</code>, pass JSON-serialized text
+                  as a string value. Do <b>not</b> pass an unquoted object.
+                </td>
+              </tr>
+              <tr>
+                <td><code>content</code></td>
+                <td>
+                  Model uploads/replacements use the Crown binary object
+                  <code
+                    >{"type":"binary","encoding":"base64","data":"..."}</code
+                  >
+                  with base64 file bytes.
+                </td>
+              </tr>
+              <tr>
+                <td><code>namesJSON</code></td>
+                <td>
+                  For deleting or creating a ZIP from selected collected images,
+                  pass a JSON array of filenames encoded as a string.
+                </td>
+              </tr>
+              <tr>
+                <td><code>getLiveFrame</code></td>
+                <td>
+                  Returns a base64 binary image envelope; decode binary data
+                  before displaying a JPEG preview.
+                </td>
+              </tr>
+              <tr>
+                <td><code>getCollectionImages</code></td>
+                <td>
+                  Returns image records including device paths; download a
+                  returned file path with the file endpoint.
+                </td>
+              </tr>
+              <tr>
+                <td><code>prepareDatasetDownload</code></td>
+                <td>
+                  Produces a temporary archive path; download using
+                  <code>GET /api/crown/file?filePath=&lt;encoded-path&gt;</code
+                  >, then call <code>acknowledgeDatasetDownload</code> for
+                  cleanup.
+                </td>
+              </tr>
+              <tr>
+                <td><code>reloadApps</code></td>
+                <td>
+                  Reloads device apps to apply pending configuration changes;
+                  calls may be temporarily unavailable during the restart.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <h3>Image download using the path returned by the API</h3>
+          <pre><code># Replace the placeholder with the EXACT path returned by the camera.
+curl -G &quot;http://CAMERA_IP/api/crown/file&quot; \
+  --data-urlencode &quot;filePath=/REPLACE/WITH/RETURNED/PATH/image.png&quot; \
+  -o image.png</code></pre>
+          <h2 id="push">Real-time notifications</h2>
+          <p>
+            <b>REST does not stream events.</b> The device Crown WebSocket uses
+            <code>/crownJSON</code> or <code>/crownMSGPACK</code>. Through the
+            Crown protocol, register
+            <code>AIObjectDetectionMonitoring/onDetection</code>,
+            <code>/onStatus</code>, <code>/onLog</code> or
+            <code>/onCollection</code>. Each event contains an argument
+            <code>data</code> encoded as a JSON string. Use the compatible Crown
+            SDK/client; a raw WebSocket subscription is not equivalent to a
+            Crown event registration.
+          </p>
+          <div class="callout">
+            <b>For a full machine-readable contract:</b> Open the downloaded
+            <code>openapi.yaml</code> in Swagger Editor or another OpenAPI
+            viewer. It includes request schemas, validation bounds, sample
+            payloads, response structures and event definitions.
+          </div>
+          <div class="footnav">
+            <span
+              >←
+              <a href="integrations.html"
+                >Integration &amp; Data Outputs</a
+              ></span
+            ><span><a href="troubleshooting.html">Troubleshooting</a> →</span>
+          </div>
+          <footer class="footer">
+            © SICK · Visionary AI Object Detection Monitoring · Application
+            v1.0.0 · Documentation v1.0.0.<br />
+          </footer>
+        </article>
+      </main>
+    </div>
+    <script src="../assets/js/manual.js"></script>
+  </body>
+</html>

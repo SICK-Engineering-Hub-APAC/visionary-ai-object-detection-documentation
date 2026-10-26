@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      name="description"
+      content="SICK Visionary AI Object Detection Monitoring operator and application engineer manual v1.0.0"
+    />
+    <title>
+      How the System Works · Visionary AI Object Detection Monitoring · SICK
+    </title>
+    <link
+      rel="icon"
+      type="image/webp"
+      href="../assets/images/brand/sick-s-logo.webp"
+    />
+    <link rel="stylesheet" href="../assets/css/manual.css" />
+  </head>
+  <body data-page="how-it-works.html">
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="brand">
+          <a href="../index.html"
+            ><img src="../assets/images/brand/sick-logo.svg" alt="SICK"
+          /></a>
+          <h1>Visionary AI Object Detection Monitoring</h1>
+          <p>End-User Manual · v1.0.0<br />Application · v1.0.0<br />SICK</p>
+        </div>
+        <nav class="nav" aria-label="Manual sections">
+          <div class="nav-group">Start here</div>
+          <a href="../index.html" data-current="index.html" class=""
+            >Overview & Quick Start</a
+          ><a
+            href="how-it-works.html"
+            data-current="how-it-works.html"
+            class="active"
+            >How the System Works</a
+          >
+          <div class="nav-group">Use the application</div>
+          <a href="monitoring.html" data-current="monitoring.html" class=""
+            >Monitoring Page</a
+          ><a
+            href="network-models.html"
+            data-current="network-models.html"
+            class=""
+            >Network Models Page</a
+          ><a
+            href="image-collection.html"
+            data-current="image-collection.html"
+            class=""
+            >Image Collection Page</a
+          ><a
+            href="log-monitoring.html"
+            data-current="log-monitoring.html"
+            class=""
+            >Log Monitoring Page</a
+          >
+          <div class="nav-group">Configure the application</div>
+          <a href="settings.html" data-current="settings.html" class=""
+            >Settings Overview & Backup</a
+          ><a
+            href="camera-settings.html"
+            data-current="camera-settings.html"
+            class=""
+            >Camera Settings</a
+          ><a
+            href="live-streaming-settings.html"
+            data-current="live-streaming-settings.html"
+            class=""
+            >Live Streaming Settings</a
+          ><a
+            href="object-detection-settings.html"
+            data-current="object-detection-settings.html"
+            class=""
+            >Object Detection Settings</a
+          ><a
+            href="mqtt-settings.html"
+            data-current="mqtt-settings.html"
+            class=""
+            >MQTT Client Settings</a
+          ><a
+            href="logging-settings.html"
+            data-current="logging-settings.html"
+            class=""
+            >Logging Settings</a
+          ><a href="license.html" data-current="license.html" class=""
+            >License Manager</a
+          >
+          <div class="nav-group">External access & support</div>
+          <a href="integrations.html" data-current="integrations.html" class=""
+            >Integration & Data Outputs</a
+          ><a href="rest-api.html" data-current="rest-api.html" class=""
+            >REST API Reference</a
+          ><a
+            href="troubleshooting.html"
+            data-current="troubleshooting.html"
+            class=""
+            >Troubleshooting</a
+          ><a
+            href="quick-reference.html"
+            data-current="quick-reference.html"
+            class=""
+            >Quick Reference</a
+          >
+        </nav>
+      </aside>
+      <main class="main">
+        <header class="topbar">
+          <button class="mobile-menu" id="mobileMenu" type="button">
+            ☰ Menu
+          </button>
+          <div class="title">How the System Works</div>
+          <div class="meta">Application v1.0.0 · Documentation v1.0.0</div>
+        </header>
+        <article class="content">
+          <div class="kicker">Concepts & behavior</div>
+          <h1>How the System Works</h1>
+          <p class="page-intro">
+            The application executes directly on the SICK Visionary B-Two
+            device. Detection processing does not require a cloud server or an
+            external PC.
+          </p>
+          <h2>Detection workflow</h2>
+          <div class="flow">
+            <span>Visionary B-Two image</span><i>→</i><span>Frame sampling</span
+            ><i>→</i><span>Active model inference</span><i>→</i
+            ><span>Confidence + overlap filtering</span><i>→</i
+            ><span>Recognition / holding</span><i>→</i
+            ><span>Web UI + events / MQTT</span>
+          </div>
+          <table class="doc-table">
+            <thead>
+              <tr>
+                <th>Stage</th>
+                <th>What happens</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><b>Camera acquisition</b></td>
+                <td>
+                  The camera produces image frames using the configured
+                  acquisition mode and FPS. Changing FPS does not directly set
+                  the model inference rate.
+                </td>
+              </tr>
+              <tr>
+                <td><b>Model inference</b></td>
+                <td>
+                  At its configured detection cycle, an enabled network is fed a
+                  camera image and predicts object class, confidence and
+                  bounding rectangle.
+                </td>
+              </tr>
+              <tr>
+                <td><b>Confidence threshold</b></td>
+                <td>
+                  Results below that network model’s threshold are excluded;
+                  raising the threshold reduces weaker detections but may miss
+                  real objects.
+                </td>
+              </tr>
+              <tr>
+                <td><b>NMS</b></td>
+                <td>
+                  Non-maximum suppression removes overlapping duplicate boxes
+                  based on the chosen strategy and overlap threshold.
+                </td>
+              </tr>
+              <tr>
+                <td><b>Temporal filtering</b></td>
+                <td>
+                  Recognition time filters brief appearances; holding time
+                  retains last-known detections across short missed
+                  observations.
+                </td>
+              </tr>
+              <tr>
+                <td><b>Output</b></td>
+                <td>
+                  Live preview and current per-class quantities in the browser;
+                  detection events on Crown WebSocket and optional MQTT
+                  publication.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <h2>Network models and practical limits</h2>
+          <p>
+            A <b>network model</b> is a trained AppSpace-compatible
+            <code>.json</code> neural network. A model may recognize one type of
+            object or contain several classes. The camera stores model files
+            separately from a settings backup. Only <b>enabled</b> models can
+            run, and the number of simultaneously active models is limited by
+            <code>MAX_MODELS</code> (the supplied optimized backup sets this to
+            <b>1</b>).
+          </p>
+          <p>
+            Models in the supplied optimized backup:
+            <b>Human</b> (enabled, threshold 0.70, recognition 1,000 ms, holding
+            3,000 ms).
+          </p>
+          <h2>Recognition & holding times</h2>
+          <table class="doc-table">
+            <thead>
+              <tr>
+                <th>Parameter</th>
+                <th>Behavior</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><b>Recognition time</b></td>
+                <td>
+                  How long the same matched detection must be seen across
+                  consecutive inference observations before it is reported.
+                  <code>0</code> disables the delay.
+                </td>
+              </tr>
+              <tr>
+                <td><b>Holding time</b></td>
+                <td>
+                  How long a recognized detection may remain reported after its
+                  last real observation. The box is shown dashed/faded and
+                  marked as held, at its <b>last-known</b> position.
+                </td>
+              </tr>
+              <tr>
+                <td><b>Both zero</b></td>
+                <td>Immediate results with no temporal stabilizing delay.</td>
+              </tr>
+              <tr>
+                <td><b>Tracking limits</b></td>
+                <td>
+                  Matching is based on same-class bounding-box overlap. It does
+                  not identify a specific person, preserve identities through
+                  crossings or perform facial recognition.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="callout">
+            <b>Timing example:</b> With Human recognition <b>1 second</b> and
+            holding <b>3 seconds</b>, a detection must persist long enough to be
+            recognized, and an already-recognized person can remain counted and
+            shown as <b>held</b> during a short occlusion. A held box is
+            <b>not</b> proof that the person is still at that location.
+          </div>
+          <h2>Preview rate versus inference rate</h2>
+          <p>
+            Three separate settings determine update behavior:
+            <b>Camera FPS</b> controls image acquisition;
+            <b>Live preview capture and polling intervals</b> control the
+            browser image refresh; <b>Detection cycle time</b> controls the
+            inference attempt cadence. These are independent and actual
+            performance also depends on the device and loaded model. The
+            inference cycle has a minimum of 1,000 ms.
+          </p>
+          <h2>What counts mean</h2>
+          <p>
+            The side panel shows how many objects are
+            <b>currently recognized</b> in each model/class, including held
+            detections. It is <b>not</b> a cumulative number of products, unique
+            people, event occurrences or lifetime detections. Hiding a model or
+            a class in the panel hides its boxes for display only; it does not
+            disable inference or suppress transmitted results.
+          </p>
+          <h2>Monitoring, persistence & recovery</h2>
+          <p>
+            Stop saves a persistent preference and immediately stops
+            acquisition, live preview and detection. It automatically requests
+            application reload. Resume saves the opposite preference and
+            automatically reloads to restart them. Both survive app reload and
+            camera reboot. A pending capture or automatic collection can prevent
+            stopping. Model and most settings changes require a separate
+            application reload, indicated by a header warning.
+          </p>
+          <h2>Scope of v1.0.0</h2>
+          <p>
+            Version 1.0.0 performs <b>2D bounding-box detection</b>. It does
+            <b>not</b> include configured ROI/zone filtering, 3D object
+            coordinates, depth-based positioning, durable event-history storage
+            or unique-person re-identification. Optional <b>depth map</b> camera
+            capture is not a 3D localization feature in this version.
+          </p>
+          <div class="footnav">
+            <span>← <a href="../index.html">Overview &amp; Quick Start</a></span
+            ><span><a href="monitoring.html">Monitoring Page</a> →</span>
+          </div>
+          <footer class="footer">
+            © SICK · Visionary AI Object Detection Monitoring · Application
+            v1.0.0 · Documentation v1.0.0.<br />
+          </footer>
+        </article>
+      </main>
+    </div>
+    <script src="../assets/js/manual.js"></script>
+  </body>
+</html>

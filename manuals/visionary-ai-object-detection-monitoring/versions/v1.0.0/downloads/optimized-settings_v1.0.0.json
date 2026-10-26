@@ -1,0 +1,78 @@
+{
+  "format": "AIObjectDetectionMonitoring.settings",
+  "version": 1,
+  "settings": {
+    "camera": {
+      "framesPerSecond": 10,
+      "acquisitionMode": "HDR",
+      "redGain": 0.93615239,
+      "greenGain": 1,
+      "blueGain": 1.02428192,
+      "autoExposureEnabled": true,
+      "autoExposureSensitivity": 0.9,
+      "autoExposureHistogramCenter": 90,
+      "autoExposureCenterBinsDelta": 20,
+      "includeDepthMap": false,
+      "depthValidationEnabled": true,
+      "depthValidationLevel": -3,
+      "histogramEqualizationEnabled": true,
+      "histogramEqualizationAveraging": false,
+      "sdkOverrides": {}
+    },
+    "preview": {
+      "captureIntervalMs": 200,
+      "pollingIntervalMs": 200,
+      "maxWidth": 960,
+      "jpegQuality": 70,
+      "staleTimeoutMs": 3000,
+      "requestTimeoutMs": 3000
+    },
+    "detection": {
+      "cycleTimeMs": 1000,
+      "nmsThreshold": 0.5,
+      "nmsStrategy": "NORMAL"
+    },
+    "mqtt": {
+      "enabled": false,
+      "host": "",
+      "port": 1883,
+      "topic": "visionary/detections",
+      "clientId": "AIObjectDetectionMonitoring",
+      "username": "",
+      "password": "",
+      "tlsEnabled": false
+    },
+    "logging": {
+      "level": "INFO",
+      "maxEntries": 1000,
+      "maxSizeMB": 5
+    },
+    "imageCollection": {
+      "intervalMs": 1000,
+      "maxImages": 4
+    }
+  },
+  "models": [
+    {
+      "id": "Human",
+      "name": "Human",
+      "objectType": "Human",
+      "threshold": 0.7,
+      "enabled": true,
+      "recognitionTimeMs": 1000,
+      "holdingTimeMs": 3000,
+      "boxColor": "#FF6B6B"
+    }
+  ],
+  "runtime": {
+    "MAX_MODELS": 1,
+    "MAX_STORED_MODELS": 100,
+    "MAX_MODEL_BYTES": 100000000,
+    "RESULT_QUEUE_SIZE": 64,
+    "PREVIEW_INTERVAL_MS": 200,
+    "PREVIEW_MAX_WIDTH": 960,
+    "PREVIEW_JPEG_QUALITY": 70,
+    "PREVIEW_MAX_BYTES": 524288,
+    "MAX_LOG_ENTRIES": 1000
+  }
+}

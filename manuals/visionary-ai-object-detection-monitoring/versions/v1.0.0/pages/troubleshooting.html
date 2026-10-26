@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      name="description"
+      content="SICK Visionary AI Object Detection Monitoring operator and application engineer manual v1.0.0"
+    />
+    <title>
+      Troubleshooting · Visionary AI Object Detection Monitoring · SICK
+    </title>
+    <link
+      rel="icon"
+      type="image/webp"
+      href="../assets/images/brand/sick-s-logo.webp"
+    />
+    <link rel="stylesheet" href="../assets/css/manual.css" />
+  </head>
+  <body data-page="troubleshooting.html">
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="brand">
+          <a href="../index.html"
+            ><img src="../assets/images/brand/sick-logo.svg" alt="SICK"
+          /></a>
+          <h1>Visionary AI Object Detection Monitoring</h1>
+          <p>End-User Manual · v1.0.0<br />Application · v1.0.0<br />SICK</p>
+        </div>
+        <nav class="nav" aria-label="Manual sections">
+          <div class="nav-group">Start here</div>
+          <a href="../index.html" data-current="index.html" class=""
+            >Overview & Quick Start</a
+          ><a href="how-it-works.html" data-current="how-it-works.html" class=""
+            >How the System Works</a
+          >
+          <div class="nav-group">Use the application</div>
+          <a href="monitoring.html" data-current="monitoring.html" class=""
+            >Monitoring Page</a
+          ><a
+            href="network-models.html"
+            data-current="network-models.html"
+            class=""
+            >Network Models Page</a
+          ><a
+            href="image-collection.html"
+            data-current="image-collection.html"
+            class=""
+            >Image Collection Page</a
+          ><a
+            href="log-monitoring.html"
+            data-current="log-monitoring.html"
+            class=""
+            >Log Monitoring Page</a
+          >
+          <div class="nav-group">Configure the application</div>
+          <a href="settings.html" data-current="settings.html" class=""
+            >Settings Overview & Backup</a
+          ><a
+            href="camera-settings.html"
+            data-current="camera-settings.html"
+            class=""
+            >Camera Settings</a
+          ><a
+            href="live-streaming-settings.html"
+            data-current="live-streaming-settings.html"
+            class=""
+            >Live Streaming Settings</a
+          ><a
+            href="object-detection-settings.html"
+            data-current="object-detection-settings.html"
+            class=""
+            >Object Detection Settings</a
+          ><a
+            href="mqtt-settings.html"
+            data-current="mqtt-settings.html"
+            class=""
+            >MQTT Client Settings</a
+          ><a
+            href="logging-settings.html"
+            data-current="logging-settings.html"
+            class=""
+            >Logging Settings</a
+          ><a href="license.html" data-current="license.html" class=""
+            >License Manager</a
+          >
+          <div class="nav-group">External access & support</div>
+          <a href="integrations.html" data-current="integrations.html" class=""
+            >Integration & Data Outputs</a
+          ><a href="rest-api.html" data-current="rest-api.html" class=""
+            >REST API Reference</a
+          ><a
+            href="troubleshooting.html"
+            data-current="troubleshooting.html"
+            class="active"
+            >Troubleshooting</a
+          ><a
+            href="quick-reference.html"
+            data-current="quick-reference.html"
+            class=""
+            >Quick Reference</a
+          >
+        </nav>
+      </aside>
+      <main class="main">
+        <header class="topbar">
+          <button class="mobile-menu" id="mobileMenu" type="button">
+            ☰ Menu
+          </button>
+          <div class="title">Troubleshooting</div>
+          <div class="meta">Application v1.0.0 · Documentation v1.0.0</div>
+        </header>
+        <article class="content">
+          <div class="kicker">Service support</div>
+          <h1>Troubleshooting</h1>
+          <p class="page-intro">
+            Start with the symptom in the table, then use the referenced pages
+            and Log Monitoring for precise error details. Most issues can be
+            diagnosed without modifying device scripts.
+          </p>
+          <h2>Symptoms and actions</h2>
+          <table class="doc-table">
+            <thead>
+              <tr>
+                <th>Symptom</th>
+                <th>Likely cause / recommended action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>No camera image or camera disconnected</td>
+                <td>
+                  Check device power, Ethernet reachability and the camera
+                  status. Confirm monitoring is enabled; review Camera
+                  acquisition settings, reload when appropriate and check Log
+                  Monitoring.
+                </td>
+              </tr>
+              <tr>
+                <td>Application shows not ready</td>
+                <td>
+                  Allow startup to finish, confirm a healthy camera and app in
+                  status, then reload once if a pending configuration change
+                  exists. Investigate logs if status remains unavailable.
+                </td>
+              </tr>
+              <tr>
+                <td>Live preview is delayed or stale</td>
+                <td>
+                  Check connection and camera workload. Try a longer browser
+                  polling interval or lower preview width/JPEG quality. Verify
+                  stale/request timeout settings.
+                </td>
+              </tr>
+              <tr>
+                <td>Image shows objects but no boxes</td>
+                <td>
+                  Check that the correct compatible model is uploaded, enabled,
+                  and actually running. Reload after model changes; verify DNN
+                  license. Test lighting and threshold.
+                </td>
+              </tr>
+              <tr>
+                <td>Too many duplicate overlapping boxes</td>
+                <td>
+                  Review Object Detection NMS strategy and threshold; verify
+                  that model outputs and classes are correct.
+                </td>
+              </tr>
+              <tr>
+                <td>Objects appear slowly</td>
+                <td>
+                  Check recognition time (a nonzero value delays confirmation),
+                  detection cycle time, and the model’s inference processing
+                  load.
+                </td>
+              </tr>
+              <tr>
+                <td>A missing object remains counted</td>
+                <td>
+                  Check holding time. Temporarily lost tracks may remain as held
+                  boxes at their last known position until the holding window
+                  expires.
+                </td>
+              </tr>
+              <tr>
+                <td>Object quantity does not match a production counter</td>
+                <td>
+                  Quantities are current scene detections, not accumulated pass
+                  counts; use a separate edge/business counting algorithm for
+                  event totals.
+                </td>
+              </tr>
+              <tr>
+                <td>Configuration not applied after Save</td>
+                <td>
+                  Watch for <code>reloadRequired</code> and reload the app.
+                  Image-collection settings are the main exception and apply
+                  immediately.
+                </td>
+              </tr>
+              <tr>
+                <td>Optimized settings import fails</td>
+                <td>
+                  Ensure all three referenced network files exist on the camera
+                  with exact model IDs, including disabled models. Stop timed
+                  collection and check the import error.
+                </td>
+              </tr>
+              <tr>
+                <td>Model upload fails</td>
+                <td>
+                  Ensure it is a SICK AppSpace-compatible network JSON file, not
+                  ONNX or an arbitrary JSON. Check file size/storage limit and
+                  read the validation message.
+                </td>
+              </tr>
+              <tr>
+                <td>Stop monitoring button fails</td>
+                <td>
+                  Timed automatic collection or a pending manual capture can
+                  block stop. Finish/stop the capture session first.
+                </td>
+              </tr>
+              <tr>
+                <td>Automatic image collection does not start</td>
+                <td>
+                  Confirm camera connected, reasonable interval/max count, free
+                  device storage and no conflicting operation. Check collection
+                  event/error.
+                </td>
+              </tr>
+              <tr>
+                <td>Downloaded ZIP unavailable</td>
+                <td>
+                  Download soon after preparation and use the exact returned
+                  device path. Acknowledge the downloaded temporary ZIP to clear
+                  it.
+                </td>
+              </tr>
+              <tr>
+                <td>MQTT has no messages</td>
+                <td>
+                  Ensure MQTT enabled, correct broker host/port/topic and
+                  credentials, unique client ID, correct TLS setting and active
+                  model inference. Check Log Monitoring.
+                </td>
+              </tr>
+              <tr>
+                <td>License warning / trial expired</td>
+                <td>
+                  Activate SICK Deep Learning Classification part no. 1614850
+                  using LicenseManager, verify the feature on the correct
+                  camera, then reload and retest.
+                </td>
+              </tr>
+              <tr>
+                <td>External REST call returns error</td>
+                <td>
+                  Check the endpoint, function name, POST method and JSON body
+                  wrapper; inspect both <code>header.status</code> and
+                  <code>data.success</code> / <code>message</code>.
+                </td>
+              </tr>
+              <tr>
+                <td>Device reboots or app restarts</td>
+                <td>
+                  Persisted settings and stop preference restore at startup, but
+                  preview and external event subscriptions must reconnect. Check
+                  configuration revision and active models.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <h2>A structured troubleshooting process</h2>
+          <ol class="steps">
+            <li>
+              <b>Record the symptom:</b> note camera identity, time, current
+              page, app version (1.0.0) and whether monitoring is on or stopped.
+            </li>
+            <li>
+              <b>Check the basics:</b> network, power, camera connected, App
+              ready, enabled model, DNN license, and reload-required flag.
+            </li>
+            <li>
+              <b>Reproduce safely:</b> present a known test object, or run the
+              relevant UI function once under controlled conditions.
+            </li>
+            <li>
+              <b>Capture evidence:</b> relevant Log Monitoring entries,
+              screenshot, REST <code>getStatus</code>, settings export and model
+              IDs if support requests them. Sanitize passwords and tickets.
+            </li>
+            <li>
+              <b>Change one variable:</b> adjust the most relevant setting, Save
+              and Reload when required; compare the same test scene.
+            </li>
+            <li>
+              <b>Escalate:</b> if not resolved, give SICK the observed behavior,
+              date/time, logs, firmware, camera type and steps already tested.
+            </li>
+          </ol>
+          <h2>Common API error codes</h2>
+          <table class="doc-table">
+            <thead>
+              <tr>
+                <th>Message</th>
+                <th>Meaning</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>backup_model_file_missing</code></td>
+                <td>
+                  Settings import references a model whose actual file does not
+                  exist on this device.
+                </td>
+              </tr>
+              <tr>
+                <td><code>reload_required</code></td>
+                <td>
+                  Operation saved successfully and requires reload to apply.
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <code>collection_busy</code> / <code>collection_active</code>
+                </td>
+                <td>
+                  A timed collection or pending capture conflicts with the
+                  requested operation.
+                </td>
+              </tr>
+              <tr>
+                <td><code>threshold_out_of_range</code></td>
+                <td>Model confidence threshold must be between 0 and 1.</td>
+              </tr>
+              <tr>
+                <td><code>invalid_recognition_timing</code></td>
+                <td>
+                  Recognition or holding time is not a valid integer in the
+                  supported 0–600,000 ms range.
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <code>unsupported_network_model</code> /
+                  <code>invalid_model_json</code>
+                </td>
+                <td>Uploaded model file is incompatible or malformed.</td>
+              </tr>
+              <tr>
+                <td><code>camera_unavailable</code></td>
+                <td>
+                  Capture cannot be started because camera resources are
+                  unavailable.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <h2>Routine care</h2>
+          <p>
+            Before changing models or settings, export a backup. Keep the
+            optical window clean, stable and correctly aimed; check detection
+            with a known target after process/layout changes. Manage captured
+            images on the camera to preserve storage; monitor logs and MQTT
+            connectivity. Re-verify license state and model load after firmware
+            or application maintenance.
+          </p>
+          <div class="footnav">
+            <span>← <a href="rest-api.html">REST API Reference</a></span
+            ><span><a href="quick-reference.html">Quick Reference</a> →</span>
+          </div>
+          <footer class="footer">
+            © SICK · Visionary AI Object Detection Monitoring · Application
+            v1.0.0 · Documentation v1.0.0.<br />
+          </footer>
+        </article>
+      </main>
+    </div>
+    <script src="../assets/js/manual.js"></script>
+  </body>
+</html>

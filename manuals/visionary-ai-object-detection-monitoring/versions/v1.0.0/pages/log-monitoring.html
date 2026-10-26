@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      name="description"
+      content="SICK Visionary AI Object Detection Monitoring operator and application engineer manual v1.0.0"
+    />
+    <title>
+      Log Monitoring Page · Visionary AI Object Detection Monitoring · SICK
+    </title>
+    <link
+      rel="icon"
+      type="image/webp"
+      href="../assets/images/brand/sick-s-logo.webp"
+    />
+    <link rel="stylesheet" href="../assets/css/manual.css" />
+  </head>
+  <body data-page="log-monitoring.html">
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="brand">
+          <a href="../index.html"
+            ><img src="../assets/images/brand/sick-logo.svg" alt="SICK"
+          /></a>
+          <h1>Visionary AI Object Detection Monitoring</h1>
+          <p>End-User Manual · v1.0.0<br />Application · v1.0.0<br />SICK</p>
+        </div>
+        <nav class="nav" aria-label="Manual sections">
+          <div class="nav-group">Start here</div>
+          <a href="../index.html" data-current="index.html" class=""
+            >Overview & Quick Start</a
+          ><a href="how-it-works.html" data-current="how-it-works.html" class=""
+            >How the System Works</a
+          >
+          <div class="nav-group">Use the application</div>
+          <a href="monitoring.html" data-current="monitoring.html" class=""
+            >Monitoring Page</a
+          ><a
+            href="network-models.html"
+            data-current="network-models.html"
+            class=""
+            >Network Models Page</a
+          ><a
+            href="image-collection.html"
+            data-current="image-collection.html"
+            class=""
+            >Image Collection Page</a
+          ><a
+            href="log-monitoring.html"
+            data-current="log-monitoring.html"
+            class="active"
+            >Log Monitoring Page</a
+          >
+          <div class="nav-group">Configure the application</div>
+          <a href="settings.html" data-current="settings.html" class=""
+            >Settings Overview & Backup</a
+          ><a
+            href="camera-settings.html"
+            data-current="camera-settings.html"
+            class=""
+            >Camera Settings</a
+          ><a
+            href="live-streaming-settings.html"
+            data-current="live-streaming-settings.html"
+            class=""
+            >Live Streaming Settings</a
+          ><a
+            href="object-detection-settings.html"
+            data-current="object-detection-settings.html"
+            class=""
+            >Object Detection Settings</a
+          ><a
+            href="mqtt-settings.html"
+            data-current="mqtt-settings.html"
+            class=""
+            >MQTT Client Settings</a
+          ><a
+            href="logging-settings.html"
+            data-current="logging-settings.html"
+            class=""
+            >Logging Settings</a
+          ><a href="license.html" data-current="license.html" class=""
+            >License Manager</a
+          >
+          <div class="nav-group">External access & support</div>
+          <a href="integrations.html" data-current="integrations.html" class=""
+            >Integration & Data Outputs</a
+          ><a href="rest-api.html" data-current="rest-api.html" class=""
+            >REST API Reference</a
+          ><a
+            href="troubleshooting.html"
+            data-current="troubleshooting.html"
+            class=""
+            >Troubleshooting</a
+          ><a
+            href="quick-reference.html"
+            data-current="quick-reference.html"
+            class=""
+            >Quick Reference</a
+          >
+        </nav>
+      </aside>
+      <main class="main">
+        <header class="topbar">
+          <button class="mobile-menu" id="mobileMenu" type="button">
+            ☰ Menu
+          </button>
+          <div class="title">Log Monitoring Page</div>
+          <div class="meta">Application v1.0.0 · Documentation v1.0.0</div>
+        </header>
+        <article class="content">
+          <div class="kicker">Operations & diagnostics</div>
+          <h1>Log Monitoring Page</h1>
+          <p class="page-intro">
+            Follow the camera application’s diagnostic messages while
+            investigating connections, model loading, license state and
+            operational issues.
+          </p>
+          <figure class="figure">
+            <img
+              loading="lazy"
+              src="../assets/images/ui/log-monitoring_1.webp"
+              alt="Log Monitoring page showing timestamped entries"
+            />
+            <figcaption>
+              Log Monitoring page showing timestamped entries — click to
+              enlarge.
+            </figcaption>
+          </figure>
+          <h2>Toolbar and expected behavior</h2>
+          <table class="doc-table">
+            <thead>
+              <tr>
+                <th>Control</th>
+                <th>Meaning</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><b>Live / Paused</b></td>
+                <td>
+                  Shows whether the browser display is following new log
+                  messages.
+                </td>
+              </tr>
+              <tr>
+                <td><b>Pause / Resume</b></td>
+                <td>
+                  Freeze/unfreeze the current visible log list. Pause does not
+                  stop processing or logging on the camera.
+                </td>
+              </tr>
+              <tr>
+                <td><b>Clear</b></td>
+                <td>
+                  Clear the entries displayed in this browser session; it does
+                  not delete the device log file.
+                </td>
+              </tr>
+              <tr>
+                <td><b>Refresh</b></td>
+                <td>
+                  Read current device logger parameters again and request
+                  updated information.
+                </td>
+              </tr>
+              <tr>
+                <td><b>Show</b></td>
+                <td>
+                  Filter entries to All, Info and above, Warning and above or
+                  Error and above.
+                </td>
+              </tr>
+              <tr>
+                <td><b>Search</b></td>
+                <td>
+                  Find text in displayed timestamp, level or message; filtering
+                  is local to the browser view.
+                </td>
+              </tr>
+              <tr>
+                <td><b>Device level</b></td>
+                <td>
+                  Sets the CSK device logger threshold; changing this affects
+                  future logging volume on the device.
+                </td>
+              </tr>
+              <tr>
+                <td><b>Maximum lines</b></td>
+                <td>
+                  Browser buffer limit: 100, 200, 500, 1,000, 2,000 or 5,000
+                  displayed lines.
+                </td>
+              </tr>
+              <tr>
+                <td><b>Auto-scroll / Jump to latest</b></td>
+                <td>
+                  Follow incoming entries or return to the newest line after
+                  scrolling up.
+                </td>
+              </tr>
+              <tr>
+                <td><b>Live stream</b></td>
+                <td>
+                  Toggles the logger callback output used for real-time display.
+                </td>
+              </tr>
+              <tr>
+                <td><b>Engine logger</b></td>
+                <td>
+                  Toggles attachment to the device engine logger;
+                  service-engineer option.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <h2>How to diagnose an error</h2>
+          <ol class="steps">
+            <li>
+              Choose <b>Show → Warning</b> or <b>Error</b> to reduce noise.
+            </li>
+            <li>
+              Enable live stream; confirm new log lines appear. File polling can
+              occur at approximately 5-second intervals when the live callback
+              is not available.
+            </li>
+            <li>
+              Reproduce the reported issue once, and observe the time, severity
+              and message.
+            </li>
+            <li>
+              Use <b>Search</b> to locate the model, license, camera, MQTT or
+              configuration message.
+            </li>
+            <li>
+              Share the exact time and error message with support; switch Device
+              level back to an appropriate production value after debugging.
+            </li>
+          </ol>
+          <figure class="figure">
+            <img
+              loading="lazy"
+              src="../assets/images/ui/log-monitoring_3.webp"
+              alt="Log severity filter menu"
+            />
+            <figcaption>
+              Log severity filter menu — click to enlarge.
+            </figcaption>
+          </figure>
+          <figure class="figure">
+            <img
+              loading="lazy"
+              src="../assets/images/ui/log-monitoring_4.webp"
+              alt="Device log-level menu"
+            />
+            <figcaption>Device log-level menu — click to enlarge.</figcaption>
+          </figure>
+          <h2>Log severities</h2>
+          <table class="doc-table">
+            <thead>
+              <tr>
+                <th>Level</th>
+                <th>Typical use</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><b>ERROR / SEVERE</b></td>
+                <td>Critical failure that usually needs intervention.</td>
+              </tr>
+              <tr>
+                <td><b>WARNING</b></td>
+                <td>
+                  Unexpected condition or possible issue; inference or
+                  communication might still continue.
+                </td>
+              </tr>
+              <tr>
+                <td><b>INFO</b></td>
+                <td>
+                  Normal operational events and state changes; commonly
+                  recommended for production.
+                </td>
+              </tr>
+              <tr>
+                <td><b>DEBUG / FINE / FINER / FINEST</b></td>
+                <td>
+                  More detailed diagnostics, potentially high volume; use during
+                  targeted investigation.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <p>
+            Level thresholds are inclusive: selecting <b>INFO</b> generally
+            allows INFO, WARNING and ERROR; selecting <b>WARNING</b> allows
+            WARNING and ERROR. The browser <b>Show</b> filter is distinct from
+            <b>Device level</b>: filtering does not make the device produce
+            additional messages.
+          </p>
+          <div class="footnav">
+            <span
+              >← <a href="image-collection.html">Image Collection Page</a></span
+            ><span
+              ><a href="settings.html">Settings Overview &amp; Backup</a>
+              →</span
+            >
+          </div>
+          <footer class="footer">
+            © SICK · Visionary AI Object Detection Monitoring · Application
+            v1.0.0 · Documentation v1.0.0.<br />
+          </footer>
+        </article>
+      </main>
+    </div>
+    <script src="../assets/js/manual.js"></script>
+  </body>
+</html>

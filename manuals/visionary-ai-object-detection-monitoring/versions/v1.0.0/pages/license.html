@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      name="description"
+      content="SICK Visionary AI Object Detection Monitoring operator and application engineer manual v1.0.0"
+    />
+    <title>
+      License Manager · Visionary AI Object Detection Monitoring · SICK
+    </title>
+    <link
+      rel="icon"
+      type="image/webp"
+      href="../assets/images/brand/sick-s-logo.webp"
+    />
+    <link rel="stylesheet" href="../assets/css/manual.css" />
+  </head>
+  <body data-page="license.html">
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="brand">
+          <a href="../index.html"
+            ><img src="../assets/images/brand/sick-logo.svg" alt="SICK"
+          /></a>
+          <h1>Visionary AI Object Detection Monitoring</h1>
+          <p>End-User Manual · v1.0.0<br />Application · v1.0.0<br />SICK</p>
+        </div>
+        <nav class="nav" aria-label="Manual sections">
+          <div class="nav-group">Start here</div>
+          <a href="../index.html" data-current="index.html" class=""
+            >Overview & Quick Start</a
+          ><a href="how-it-works.html" data-current="how-it-works.html" class=""
+            >How the System Works</a
+          >
+          <div class="nav-group">Use the application</div>
+          <a href="monitoring.html" data-current="monitoring.html" class=""
+            >Monitoring Page</a
+          ><a
+            href="network-models.html"
+            data-current="network-models.html"
+            class=""
+            >Network Models Page</a
+          ><a
+            href="image-collection.html"
+            data-current="image-collection.html"
+            class=""
+            >Image Collection Page</a
+          ><a
+            href="log-monitoring.html"
+            data-current="log-monitoring.html"
+            class=""
+            >Log Monitoring Page</a
+          >
+          <div class="nav-group">Configure the application</div>
+          <a href="settings.html" data-current="settings.html" class=""
+            >Settings Overview & Backup</a
+          ><a
+            href="camera-settings.html"
+            data-current="camera-settings.html"
+            class=""
+            >Camera Settings</a
+          ><a
+            href="live-streaming-settings.html"
+            data-current="live-streaming-settings.html"
+            class=""
+            >Live Streaming Settings</a
+          ><a
+            href="object-detection-settings.html"
+            data-current="object-detection-settings.html"
+            class=""
+            >Object Detection Settings</a
+          ><a
+            href="mqtt-settings.html"
+            data-current="mqtt-settings.html"
+            class=""
+            >MQTT Client Settings</a
+          ><a
+            href="logging-settings.html"
+            data-current="logging-settings.html"
+            class=""
+            >Logging Settings</a
+          ><a href="license.html" data-current="license.html" class="active"
+            >License Manager</a
+          >
+          <div class="nav-group">External access & support</div>
+          <a href="integrations.html" data-current="integrations.html" class=""
+            >Integration & Data Outputs</a
+          ><a href="rest-api.html" data-current="rest-api.html" class=""
+            >REST API Reference</a
+          ><a
+            href="troubleshooting.html"
+            data-current="troubleshooting.html"
+            class=""
+            >Troubleshooting</a
+          ><a
+            href="quick-reference.html"
+            data-current="quick-reference.html"
+            class=""
+            >Quick Reference</a
+          >
+        </nav>
+      </aside>
+      <main class="main">
+        <header class="topbar">
+          <button class="mobile-menu" id="mobileMenu" type="button">
+            ☰ Menu
+          </button>
+          <div class="title">License Manager</div>
+          <div class="meta">Application v1.0.0 · Documentation v1.0.0</div>
+        </header>
+        <article class="content">
+          <div class="kicker">Before first use · license activation</div>
+          <h1>Deep Learning Classification License</h1>
+          <p class="page-intro">
+            The Visionary B-Two must have a valid
+            <b>SICK Deep Learning Classification</b> license (SICK part number
+            <b>1614850</b>) for sustained on-device neural network inference.
+            Use the SICK LicenseManager running <b>on the camera</b> to activate
+            the license ticket.
+          </p>
+          <table class="doc-table">
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>What to know</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><b>Required license</b></td>
+                <td>
+                  Deep Learning Classification License ·
+                  <b>part no. 1614850</b>.
+                </td>
+              </tr>
+              <tr>
+                <td><b>Activation ticket</b></td>
+                <td>
+                  Delivered by SICK after license purchase, typically via
+                  order-confirmation email. Keep it confidential.
+                </td>
+              </tr>
+              <tr>
+                <td><b>Device binding</b></td>
+                <td>
+                  Activation is associated with the camera’s CodeMeter container
+                  ID. Check that you are activating the correct physical device.
+                </td>
+              </tr>
+              <tr>
+                <td><b>Two methods</b></td>
+                <td>
+                  Direct online license transfer, or offline file-based transfer
+                  using a second internet-connected PC.
+                </td>
+              </tr>
+              <tr>
+                <td><b>Inference indicator</b></td>
+                <td>
+                  The application reports the device DNN license (including any
+                  trial/limited state). This differs from its informational
+                  app-license indicator.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <h2 id="open-manager">1. Open SICK LicenseManager</h2>
+          <figure class="figure">
+            <img
+              loading="lazy"
+              src="../assets/images/ui/sick-license-manager_1.webp"
+              alt="SICK LicenseManager license overview showing a successfully activated Deep Learning Classification license with product code 1003"
+            />
+            <figcaption>
+              License overview on an already activated camera:
+              <b>DEEP LEARNING CLASSIFICATION LICENSE</b>, Product Code
+              <b>1003</b> and License Quantity <b>1</b> — click to enlarge.
+            </figcaption>
+          </figure>
+          <ol class="steps">
+            <li>
+              Connect a PC to the same reachable network as the Visionary B-Two
+              camera and open a browser.
+            </li>
+            <li>
+              Open the installed <b>CSK_MODULE_LICENSEMANAGER</b> page from the
+              camera navigation menu. The supplied screenshot uses the page URL
+              pattern
+              <code
+                >http://&lt;camera-ip&gt;/#!msdd=CSK_Module_LicenseManager&amp;page=CSK_Module_LicenseManager</code
+              >. Replace the camera IP with yours. Device firmware or module
+              installation can change the exact URL.
+            </li>
+            <li>
+              Check the <b>License Overview</b> first. If
+              <b>DEEP LEARNING CLASSIFICATION LICENSE</b> is already present
+              with a valid quantity, no new activation is needed. Otherwise,
+              open the <b>(de-)activate</b> licensing workflow and choose
+              activation; do not deactivate an existing valid production
+              license. Confirm the displayed device and container match the
+              camera you intend to activate.
+            </li>
+            <li>
+              On the <b>Connection</b> screen, choose
+              <b>Yes – Direct License Transfer</b> when the camera-side transfer
+              can reach the licensing server, or
+              <b>No – File-based License Transfer</b> when it cannot.
+            </li>
+          </ol>
+          <figure class="figure">
+            <img
+              loading="lazy"
+              src="../assets/images/ui/sick-license-manager_2.webp"
+              alt="LicenseManager connection selection: direct online or file-based transfer"
+            />
+            <figcaption>
+              LicenseManager connection selection: direct online or file-based
+              transfer — click to enlarge.
+            </figcaption>
+          </figure>
+          <h2 id="online">2A. Direct online license transfer</h2>
+          <ol class="steps">
+            <li>
+              On the Connection screen select
+              <b>Yes – Direct License Transfer</b> and click <b>Next</b>. This
+              method requires internet connectivity to the licensing service
+              from the license-transfer environment.
+            </li>
+            <li>
+              On the <b>Ticket &amp; License</b> screen, enter the activation
+              ticket from your SICK order confirmation in the five ticket
+              fields. The <b>Next</b> button stays disabled until a complete
+              ticket is entered.
+            </li>
+            <li>
+              Click <b>Next</b>. Follow the wizard prompts to choose the
+              available <b>Deep Learning Classification</b> license and confirm
+              transfer <b>to the camera</b>. Review the target device/container
+              before confirming.
+            </li>
+            <li>
+              Wait for the wizard to display a successful license transfer. Do
+              not close the browser or unplug the camera during an active
+              transfer.
+            </li>
+            <li>
+              Return to the license overview and verify the activated product.
+              Reload the <b>Visionary AI Object Detection Monitoring</b> app if
+              necessary, then verify inference on the Monitoring page.
+            </li>
+          </ol>
+          <figure class="figure">
+            <img
+              loading="lazy"
+              src="../assets/images/ui/sick-license-manager_3.webp"
+              alt="Online transfer: enter the activation ticket from the SICK order confirmation"
+            />
+            <figcaption>
+              Online transfer: enter the activation ticket from the SICK order
+              confirmation — click to enlarge.
+            </figcaption>
+          </figure>
+          <div class="callout">
+            <b>Network note:</b> The page showing an available internet
+            connection does not guarantee a successful transfer. If a firewall,
+            DNS, proxy or licensing-server restriction prevents the direct
+            workflow, choose the offline file-based option instead.
+          </div>
+          <h2 id="offline">2B. Offline file-based license transfer</h2>
+          <p>
+            Use this method when the camera itself cannot reach the SICK license
+            server. You need a browser connected to the camera, an
+            internet-connected PC, and a way to transfer three files between
+            them.
+          </p>
+          <figure class="figure">
+            <img
+              loading="lazy"
+              src="../assets/images/ui/sick-license-manager_4.webp"
+              alt="File-based activation: four-step workflow displayed by LicenseManager"
+            />
+            <figcaption>
+              File-based activation: four-step workflow displayed by
+              LicenseManager — click to enlarge.
+            </figcaption>
+          </figure>
+          <ol class="steps">
+            <li>
+              <b>Get License Request File (context):</b> On the camera
+              LicenseManager, select <b>No – File-based License Transfer</b>,
+              click <b>Next</b> and follow Step 1 to download a device-specific
+              context/request file (<code>*.WibuCmRaC</code>). Keep the file
+              unchanged. It identifies the target camera container.
+            </li>
+            <li>
+              <b>Get License Update File (update):</b> On an internet-connected
+              PC, visit
+              <a
+                href="https://license.sick.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                >https://license.sick.com/</a
+              >, enter the activation ticket, choose the device/SICK SENSOR/SIM
+              activation option where prompted, and select file-based transfer.
+              Upload the context/request file, then download the issued license
+              update (<code>*.WibuCmRaU</code>).
+            </li>
+            <li>
+              <b>Install License Update File:</b> Transfer the update file back
+              to the camera-connected PC. In the same LicenseManager wizard,
+              select the Step 3 continuation or proceed with <b>Next</b>, choose
+              the update file, and install it <b>on the same camera</b>. Check
+              that LicenseManager reports a successful installation.
+            </li>
+            <li>
+              <b>Confirm Transfer:</b> Follow Step 4 to save the
+              confirmation/receipt file (usually
+              <code>*.receipt.WibuCmRaC</code>). Return to the
+              internet-connected PC and upload this receipt to the SICK license
+              site to complete the transaction record.
+            </li>
+            <li>
+              Reopen the device license list, verify the activated Deep Learning
+              feature and return to Monitoring to confirm that inference runs
+              without a license restriction.
+            </li>
+          </ol>
+          <div class="callout warn">
+            <b>Do not mix files from different cameras.</b> License request,
+            update and receipt files correspond to a specific device/container
+            and transfer transaction. Keep the files and original ticket until
+            activation and receipt confirmation are complete.
+          </div>
+          <h2 id="verify">3. Confirm the license in the application</h2>
+          <ol class="steps">
+            <li>
+              Open <b>Visionary AI Object Detection Monitoring → Monitoring</b>.
+              Ensure the app is ready and camera connected.
+            </li>
+            <li>
+              Enable a correctly loaded network model and apply changes with
+              <b>Reload app</b>. Present an object the model can recognize.
+            </li>
+            <li>
+              Check for detection boxes and review notifications and
+              <b>Log Monitoring</b> for license warnings. If a worker still
+              reports a LIMITED/TRIAL state or inference is blocked, re-check
+              the installed license on the exact camera and reload the app.
+            </li>
+            <li>
+              Record the camera identity, license part number, activation status
+              and service date in your commissioning notes—<b>not</b> the
+              activation ticket itself.
+            </li>
+          </ol>
+          <h2 id="license-troubleshoot">Common activation problems</h2>
+          <table class="doc-table">
+            <thead>
+              <tr>
+                <th>Problem</th>
+                <th>What to check</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Next button disabled on ticket screen</td>
+                <td>
+                  Ensure the complete, correctly formatted activation ticket is
+                  entered in all required groups.
+                </td>
+              </tr>
+              <tr>
+                <td>Cannot connect online</td>
+                <td>
+                  Test DNS, gateway, firewall and proxy access; select the
+                  file-based transfer when direct activation is unavailable.
+                </td>
+              </tr>
+              <tr>
+                <td>License file rejected</td>
+                <td>
+                  Check the device/container and that the context and update
+                  files came from the same transfer.
+                </td>
+              </tr>
+              <tr>
+                <td>License activated, model still blocked</td>
+                <td>
+                  Check whether the right feature was activated, reload the app,
+                  inspect the DNN license worker status and contact SICK if it
+                  remains restricted.
+                </td>
+              </tr>
+              <tr>
+                <td>Receipt not yet confirmed</td>
+                <td>
+                  Complete the Step 4 upload at the license server; retain
+                  transaction files until confirmation is successful.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <h2>Official SICK instructions</h2>
+          <p>
+            See the
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://cdn.sick.com/media/docs/1/81/181/technical_information_how_to_get_started_deep_learning_classification_license_en_im0098181.pdf"
+              >SICK Deep Learning Classification License Activation guide
+              (PDF)</a
+            >
+            and the
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://license.sick.com/"
+              >SICK license server</a
+            >. The supplied LicenseManager screenshots reflect the device’s
+            current screen; wording of later steps can vary by software version.
+          </p>
+          <div class="footnav">
+            <span>← <a href="logging-settings.html">Logging Settings</a></span
+            ><span
+              ><a href="integrations.html">Integration &amp; Data Outputs</a>
+              →</span
+            >
+          </div>
+          <footer class="footer">
+            © SICK · Visionary AI Object Detection Monitoring · Application
+            v1.0.0 · Documentation v1.0.0.<br />
+          </footer>
+        </article>
+      </main>
+    </div>
+    <script src="../assets/js/manual.js"></script>
+  </body>
+</html>

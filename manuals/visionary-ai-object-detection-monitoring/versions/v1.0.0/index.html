@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      name="description"
+      content="SICK Visionary AI Object Detection Monitoring operator and application engineer manual v1.0.0"
+    />
+    <title>
+      Overview &amp; Quick Start · Visionary AI Object Detection Monitoring ·
+      SICK
+    </title>
+    <link
+      rel="icon"
+      type="image/webp"
+      href="assets/images/brand/sick-s-logo.webp"
+    />
+    <link rel="stylesheet" href="assets/css/manual.css" />
+  </head>
+  <body data-page="index.html">
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="brand">
+          <a href="index.html"
+            ><img src="assets/images/brand/sick-logo.svg" alt="SICK"
+          /></a>
+          <h1>Visionary AI Object Detection Monitoring</h1>
+          <p>End-User Manual · v1.0.0<br />Application · v1.0.0<br />SICK</p>
+        </div>
+        <nav class="nav" aria-label="Manual sections">
+          <div class="nav-group">Start here</div>
+          <a href="index.html" data-current="index.html" class="active"
+            >Overview & Quick Start</a
+          ><a
+            href="pages/how-it-works.html"
+            data-current="how-it-works.html"
+            class=""
+            >How the System Works</a
+          >
+          <div class="nav-group">Use the application</div>
+          <a
+            href="pages/monitoring.html"
+            data-current="monitoring.html"
+            class=""
+            >Monitoring Page</a
+          ><a
+            href="pages/network-models.html"
+            data-current="network-models.html"
+            class=""
+            >Network Models Page</a
+          ><a
+            href="pages/image-collection.html"
+            data-current="image-collection.html"
+            class=""
+            >Image Collection Page</a
+          ><a
+            href="pages/log-monitoring.html"
+            data-current="log-monitoring.html"
+            class=""
+            >Log Monitoring Page</a
+          >
+          <div class="nav-group">Configure the application</div>
+          <a href="pages/settings.html" data-current="settings.html" class=""
+            >Settings Overview & Backup</a
+          ><a
+            href="pages/camera-settings.html"
+            data-current="camera-settings.html"
+            class=""
+            >Camera Settings</a
+          ><a
+            href="pages/live-streaming-settings.html"
+            data-current="live-streaming-settings.html"
+            class=""
+            >Live Streaming Settings</a
+          ><a
+            href="pages/object-detection-settings.html"
+            data-current="object-detection-settings.html"
+            class=""
+            >Object Detection Settings</a
+          ><a
+            href="pages/mqtt-settings.html"
+            data-current="mqtt-settings.html"
+            class=""
+            >MQTT Client Settings</a
+          ><a
+            href="pages/logging-settings.html"
+            data-current="logging-settings.html"
+            class=""
+            >Logging Settings</a
+          ><a href="pages/license.html" data-current="license.html" class=""
+            >License Manager</a
+          >
+          <div class="nav-group">External access & support</div>
+          <a
+            href="pages/integrations.html"
+            data-current="integrations.html"
+            class=""
+            >Integration & Data Outputs</a
+          ><a href="pages/rest-api.html" data-current="rest-api.html" class=""
+            >REST API Reference</a
+          ><a
+            href="pages/troubleshooting.html"
+            data-current="troubleshooting.html"
+            class=""
+            >Troubleshooting</a
+          ><a
+            href="pages/quick-reference.html"
+            data-current="quick-reference.html"
+            class=""
+            >Quick Reference</a
+          >
+        </nav>
+      </aside>
+      <main class="main">
+        <header class="topbar">
+          <button class="mobile-menu" id="mobileMenu" type="button">
+            ☰ Menu
+          </button>
+          <div class="title">Overview &amp; Quick Start</div>
+          <div class="meta">Application v1.0.0 · Documentation v1.0.0</div>
+        </header>
+        <article class="content">
+          <section class="hero">
+            <div class="eyebrow">SICK · End-User Manual</div>
+            <h1>Visionary AI Object Detection Monitoring</h1>
+            <p>
+              Operate, configure and monitor object detection directly on the
+              SICK Visionary B-Two camera — with practical guidance for
+              operators, service engineers and application engineers.
+            </p>
+            <div class="badges">
+              <span class="badge">On-camera application</span
+              ><span class="badge">2D object detection</span
+              ><span class="badge">Visionary B-Two</span>
+            </div>
+          </section>
+          <h2>What the application does</h2>
+          <p class="lead">
+            The camera captures the live scene, runs an enabled deep-learning
+            object-detection network model, and shows the identified object
+            classes, confidence percentages, bounding boxes and current visible
+            quantities in the browser. Optional MQTT and Crown WebSocket outputs
+            make the results available to other systems.
+          </p>
+          <div class="grid">
+            <div class="card third">
+              <h3>Daily monitoring</h3>
+              <p>
+                See the live image, detection boxes, current object quantities
+                and camera status. Stop or resume camera monitoring when
+                required.
+              </p>
+              <p><a href="pages/monitoring.html">Monitoring guide →</a></p>
+            </div>
+            <div class="card third">
+              <h3>Model management</h3>
+              <p>
+                Add compatible network JSON files, set confidence and
+                recognition timing, choose which model runs and reload to apply.
+              </p>
+              <p><a href="pages/network-models.html">Models guide →</a></p>
+            </div>
+            <div class="card third">
+              <h3>Capture & integrate</h3>
+              <p>
+                Collect example images, monitor logs, configure MQTT and access
+                the camera using its external Crown API.
+              </p>
+              <p>
+                <a href="pages/image-collection.html">Image collection →</a>
+              </p>
+            </div>
+          </div>
+          <h2>Getting started</h2>
+          <ol class="steps">
+            <li>
+              Confirm the <b>Visionary B-Two</b> camera is reachable over the
+              network and this AppSpace application is installed and running.
+            </li>
+            <li>
+              Confirm the required <b>Deep Learning Classification</b> license
+              (SICK part number <b>1614850</b>) is activated. Inference without
+              a full device license can be 120-minute time limited and
+              subsequently blocked.
+            </li>
+            <li>
+              Open the camera in a browser, for example
+              <code
+                >http://&lt;camera-ip&gt;/#/monitoring?msdd=AIObjectDetectionMonitoring.msdd</code
+              >. Replace the example IP with the actual camera address. Use the
+              application navigation menu to switch pages.
+            </li>
+            <li>
+              Obtain the compatible
+              <b>people-detection network model JSON separately from SICK</b>
+              and add it from <b>Network models</b> before enabling it.
+            </li>
+            <li>
+              Check <b>Settings</b>, configure the required model and select
+              <b>Reload app</b> from the header menu after changes; verify
+              <b>Camera connected</b> and <b>App ready</b>.
+            </li>
+            <li>
+              Open <b>Monitoring</b>; confirm the live scene and object boxes
+              match expectations. Keep the scene and camera position stable for
+              reliable results.
+            </li>
+          </ol>
+          <div class="callout warn">
+            <b>License required:</b> SICK
+            <strong>Deep Learning Classification</strong> license,
+            <strong>part number 1614850</strong>.
+          </div>
+          <h2>Application at a glance</h2>
+          <figure class="figure">
+            <img
+              loading="lazy"
+              src="assets/images/ui/monitoring_7.webp"
+              alt="Main Monitoring page showing one human with detection bounding box and quantity panel"
+            />
+            <figcaption>Monitoring — the main operator page.</figcaption>
+          </figure>
+          <h2>Optimized configuration</h2>
+          <p>
+            Download the supplied configuration backup and import it using
+            <b>Settings → Import settings</b>. Keep the file unchanged if you
+            want to reproduce the provided configuration.
+          </p>
+          <p>
+            <a
+              class="download"
+              href="downloads/optimized-settings_v1.0.0.json"
+              download
+              >↓ Download optimized settings v1.0.0 (JSON)</a
+            >
+          </p>
+          <div class="callout warn">
+            <b>Import prerequisite:</b> This backup references a model ID
+            (<code>Human</code>). The Human model JSON is <b>not</b> in this
+            documentation and will be supplied separately by SICK. Importing a
+            backup does <b>not</b> upload model files. See
+            <a href="pages/settings.html#import-backup">Backup & import</a>.
+          </div>
+          <h2>What is included in this manual</h2>
+          <p>
+            Open sections from the fixed left sidebar. Dedicated pages explain
+            Monitoring, Network models, Image collection, Log monitoring, every
+            Settings tab, License Manager, integration, REST APIs and
+            troubleshooting. The screenshots can be enlarged by clicking them.
+          </p>
+          <div class="footnav">
+            <span></span
+            ><span
+              ><a href="pages/how-it-works.html">How the System Works</a>
+              →</span
+            >
+          </div>
+          <footer class="footer">
+            © SICK · Visionary AI Object Detection Monitoring · Application
+            v1.0.0 · Documentation v1.0.0.<br />
+          </footer>
+        </article>
+      </main>
+    </div>
+    <script src="assets/js/manual.js"></script>
+  </body>
+</html>

@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      name="description"
+      content="SICK Visionary AI Object Detection Monitoring operator and application engineer manual v1.0.0"
+    />
+    <title>
+      Image Collection Page · Visionary AI Object Detection Monitoring · SICK
+    </title>
+    <link
+      rel="icon"
+      type="image/webp"
+      href="../assets/images/brand/sick-s-logo.webp"
+    />
+    <link rel="stylesheet" href="../assets/css/manual.css" />
+  </head>
+  <body data-page="image-collection.html">
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="brand">
+          <a href="../index.html"
+            ><img src="../assets/images/brand/sick-logo.svg" alt="SICK"
+          /></a>
+          <h1>Visionary AI Object Detection Monitoring</h1>
+          <p>End-User Manual · v1.0.0<br />Application · v1.0.0<br />SICK</p>
+        </div>
+        <nav class="nav" aria-label="Manual sections">
+          <div class="nav-group">Start here</div>
+          <a href="../index.html" data-current="index.html" class=""
+            >Overview & Quick Start</a
+          ><a href="how-it-works.html" data-current="how-it-works.html" class=""
+            >How the System Works</a
+          >
+          <div class="nav-group">Use the application</div>
+          <a href="monitoring.html" data-current="monitoring.html" class=""
+            >Monitoring Page</a
+          ><a
+            href="network-models.html"
+            data-current="network-models.html"
+            class=""
+            >Network Models Page</a
+          ><a
+            href="image-collection.html"
+            data-current="image-collection.html"
+            class="active"
+            >Image Collection Page</a
+          ><a
+            href="log-monitoring.html"
+            data-current="log-monitoring.html"
+            class=""
+            >Log Monitoring Page</a
+          >
+          <div class="nav-group">Configure the application</div>
+          <a href="settings.html" data-current="settings.html" class=""
+            >Settings Overview & Backup</a
+          ><a
+            href="camera-settings.html"
+            data-current="camera-settings.html"
+            class=""
+            >Camera Settings</a
+          ><a
+            href="live-streaming-settings.html"
+            data-current="live-streaming-settings.html"
+            class=""
+            >Live Streaming Settings</a
+          ><a
+            href="object-detection-settings.html"
+            data-current="object-detection-settings.html"
+            class=""
+            >Object Detection Settings</a
+          ><a
+            href="mqtt-settings.html"
+            data-current="mqtt-settings.html"
+            class=""
+            >MQTT Client Settings</a
+          ><a
+            href="logging-settings.html"
+            data-current="logging-settings.html"
+            class=""
+            >Logging Settings</a
+          ><a href="license.html" data-current="license.html" class=""
+            >License Manager</a
+          >
+          <div class="nav-group">External access & support</div>
+          <a href="integrations.html" data-current="integrations.html" class=""
+            >Integration & Data Outputs</a
+          ><a href="rest-api.html" data-current="rest-api.html" class=""
+            >REST API Reference</a
+          ><a
+            href="troubleshooting.html"
+            data-current="troubleshooting.html"
+            class=""
+            >Troubleshooting</a
+          ><a
+            href="quick-reference.html"
+            data-current="quick-reference.html"
+            class=""
+            >Quick Reference</a
+          >
+        </nav>
+      </aside>
+      <main class="main">
+        <header class="topbar">
+          <button class="mobile-menu" id="mobileMenu" type="button">
+            ☰ Menu
+          </button>
+          <div class="title">Image Collection Page</div>
+          <div class="meta">Application v1.0.0 · Documentation v1.0.0</div>
+        </header>
+        <article class="content">
+          <div class="kicker">Dataset preparation</div>
+          <h1>Image Collection Page</h1>
+          <p class="page-intro">
+            Collect images directly from the camera for later annotation or
+            retraining. Images are stored on the device until removed. This page
+            is separate from normal live preview and detection.
+          </p>
+          <figure class="figure">
+            <img
+              loading="lazy"
+              src="../assets/images/ui/image-collection_1.webp"
+              alt="Image Collection gallery showing saved device images"
+            />
+            <figcaption>
+              Image Collection gallery showing saved device images — click to
+              enlarge.
+            </figcaption>
+          </figure>
+          <h2>Capture modes</h2>
+          <table class="doc-table">
+            <thead>
+              <tr>
+                <th>Control</th>
+                <th>Behavior</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><b>Capture image</b></td>
+                <td>
+                  Requests one new camera image, even when automatic collection
+                  is not running, provided the camera is available.
+                </td>
+              </tr>
+              <tr>
+                <td><b>Start collection</b></td>
+                <td>
+                  Opens a panel to choose the capture interval and maximum new
+                  images; collection then runs automatically.
+                </td>
+              </tr>
+              <tr>
+                <td><b>Stop auto</b></td>
+                <td>
+                  Stops a running timed session. Previously stored images
+                  remain.
+                </td>
+              </tr>
+              <tr>
+                <td><b>Captured</b></td>
+                <td>
+                  Count of images currently stored in the collection (existing
+                  images are retained between sessions).
+                </td>
+              </tr>
+              <tr>
+                <td><b>Gallery</b></td>
+                <td>
+                  Shows thumbnails and filenames. Click a thumbnail to open the
+                  original image in a new browser tab.
+                </td>
+              </tr>
+              <tr>
+                <td><b>Select all / individual checkbox</b></td>
+                <td>Choose files for download or deletion.</td>
+              </tr>
+              <tr>
+                <td><b>Download selected</b></td>
+                <td>
+                  Creates a temporary ZIP for selected images and downloads it
+                  as <code>dataset.zip</code>; original images are kept.
+                </td>
+              </tr>
+              <tr>
+                <td><b>Delete selected / Delete</b></td>
+                <td>
+                  Permanently removes chosen saved images after confirmation.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <h2>Collect a series automatically</h2>
+          <ol class="steps">
+            <li>
+              Point the camera at the objects or scenes you want to use as
+              examples. Ensure the camera is connected.
+            </li>
+            <li>
+              Click <b>Start collection</b> to open the configuration panel.
+            </li>
+            <li>
+              Choose <b>Interval (ms)</b> (100–60,000) and
+              <b>Maximum images</b> (1–10,000). For example, an interval of
+              1,000 ms captures approximately one frame per second while active.
+            </li>
+            <li>
+              Click <b>Start collection</b> inside the panel. The capture count
+              and gallery update as images arrive.
+            </li>
+            <li>
+              Collection stops automatically after the new-image target is met;
+              alternatively click <b>Stop auto</b>. Keep sufficient device
+              storage available.
+            </li>
+            <li>
+              Select representative images, click <b>Download selected</b>, save
+              the ZIP on your PC, then remove unnecessary images from the
+              camera.
+            </li>
+          </ol>
+          <figure class="figure">
+            <img
+              loading="lazy"
+              src="../assets/images/ui/image-collection_2.webp"
+              alt="Image Collection configuration panel for timed capture"
+            />
+            <figcaption>
+              Image Collection configuration panel for timed capture — click to
+              enlarge.
+            </figcaption>
+          </figure>
+          <h2>Single image / selecting and deleting</h2>
+          <p>
+            Choose <b>Capture image</b> to take one image immediately (capture
+            may complete asynchronously). Tick one or more image cards, then use
+            <b>Download selected</b> to export or <b>Delete selected</b> to
+            remove. The delete action opens a confirmation dialog. Removal is
+            unavailable while a timed session or capture is pending.
+          </p>
+          <figure class="figure">
+            <img
+              loading="lazy"
+              src="../assets/images/ui/image-collection_3.webp"
+              alt="Selected collection images prepared for download or deletion"
+            />
+            <figcaption>
+              Selected collection images prepared for download or deletion —
+              click to enlarge.
+            </figcaption>
+          </figure>
+          <h2>Image format and storage</h2>
+          <p>
+            The full-resolution collection images are stored as
+            <b>lossless RGB PNG</b> on the camera; this is separate from
+            lower-resolution compressed JPEG previews shown in Monitoring.
+            Captured images are not automatically annotated or trained by this
+            application. They can be exported for SICK DTag/DStudio processing
+            or another supported offline workflow.
+          </p>
+          <div class="callout warn">
+            <b>Storage and privacy:</b> Captured images can include people or
+            operational information. Download/store them only in approved
+            locations and delete old images when they are no longer needed. This
+            version does not claim an automatic retention limit for the gallery.
+          </div>
+          <div class="footnav">
+            <span>← <a href="network-models.html">Network Models Page</a></span
+            ><span
+              ><a href="log-monitoring.html">Log Monitoring Page</a> →</span
+            >
+          </div>
+          <footer class="footer">
+            © SICK · Visionary AI Object Detection Monitoring · Application
+            v1.0.0 · Documentation v1.0.0.<br />
+          </footer>
+        </article>
+      </main>
+    </div>
+    <script src="../assets/js/manual.js"></script>
+  </body>
+</html>

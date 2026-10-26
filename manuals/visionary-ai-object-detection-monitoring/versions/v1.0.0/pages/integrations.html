@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      name="description"
+      content="SICK Visionary AI Object Detection Monitoring operator and application engineer manual v1.0.0"
+    />
+    <title>
+      Integration &amp; Data Outputs · Visionary AI Object Detection Monitoring
+      · SICK
+    </title>
+    <link
+      rel="icon"
+      type="image/webp"
+      href="../assets/images/brand/sick-s-logo.webp"
+    />
+    <link rel="stylesheet" href="../assets/css/manual.css" />
+  </head>
+  <body data-page="integrations.html">
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="brand">
+          <a href="../index.html"
+            ><img src="../assets/images/brand/sick-logo.svg" alt="SICK"
+          /></a>
+          <h1>Visionary AI Object Detection Monitoring</h1>
+          <p>End-User Manual · v1.0.0<br />Application · v1.0.0<br />SICK</p>
+        </div>
+        <nav class="nav" aria-label="Manual sections">
+          <div class="nav-group">Start here</div>
+          <a href="../index.html" data-current="index.html" class=""
+            >Overview & Quick Start</a
+          ><a href="how-it-works.html" data-current="how-it-works.html" class=""
+            >How the System Works</a
+          >
+          <div class="nav-group">Use the application</div>
+          <a href="monitoring.html" data-current="monitoring.html" class=""
+            >Monitoring Page</a
+          ><a
+            href="network-models.html"
+            data-current="network-models.html"
+            class=""
+            >Network Models Page</a
+          ><a
+            href="image-collection.html"
+            data-current="image-collection.html"
+            class=""
+            >Image Collection Page</a
+          ><a
+            href="log-monitoring.html"
+            data-current="log-monitoring.html"
+            class=""
+            >Log Monitoring Page</a
+          >
+          <div class="nav-group">Configure the application</div>
+          <a href="settings.html" data-current="settings.html" class=""
+            >Settings Overview & Backup</a
+          ><a
+            href="camera-settings.html"
+            data-current="camera-settings.html"
+            class=""
+            >Camera Settings</a
+          ><a
+            href="live-streaming-settings.html"
+            data-current="live-streaming-settings.html"
+            class=""
+            >Live Streaming Settings</a
+          ><a
+            href="object-detection-settings.html"
+            data-current="object-detection-settings.html"
+            class=""
+            >Object Detection Settings</a
+          ><a
+            href="mqtt-settings.html"
+            data-current="mqtt-settings.html"
+            class=""
+            >MQTT Client Settings</a
+          ><a
+            href="logging-settings.html"
+            data-current="logging-settings.html"
+            class=""
+            >Logging Settings</a
+          ><a href="license.html" data-current="license.html" class=""
+            >License Manager</a
+          >
+          <div class="nav-group">External access & support</div>
+          <a
+            href="integrations.html"
+            data-current="integrations.html"
+            class="active"
+            >Integration & Data Outputs</a
+          ><a href="rest-api.html" data-current="rest-api.html" class=""
+            >REST API Reference</a
+          ><a
+            href="troubleshooting.html"
+            data-current="troubleshooting.html"
+            class=""
+            >Troubleshooting</a
+          ><a
+            href="quick-reference.html"
+            data-current="quick-reference.html"
+            class=""
+            >Quick Reference</a
+          >
+        </nav>
+      </aside>
+      <main class="main">
+        <header class="topbar">
+          <button class="mobile-menu" id="mobileMenu" type="button">
+            ☰ Menu
+          </button>
+          <div class="title">Integration &amp; Data Outputs</div>
+          <div class="meta">Application v1.0.0 · Documentation v1.0.0</div>
+        </header>
+        <article class="content">
+          <div class="kicker">External systems</div>
+          <h1>Integration &amp; Data Outputs</h1>
+          <p class="page-intro">
+            The application processes object detection directly on the camera.
+            External systems may consume the current state using the device
+            Crown REST API, receive changes over Crown WebSocket, or subscribe
+            to MQTT when it is configured and enabled.
+          </p>
+          <h2>Choose an integration route</h2>
+          <table class="doc-table">
+            <thead>
+              <tr>
+                <th>Interface</th>
+                <th>When to use</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><b>Crown REST API</b></td>
+                <td>
+                  Request the latest application state and settings; control
+                  monitoring; manage models and image collection; download
+                  collected images. Suitable for control panels, tools and
+                  supervisory polling.
+                </td>
+              </tr>
+              <tr>
+                <td><b>Crown WebSocket</b></td>
+                <td>
+                  Subscribe to
+                  <code>AIObjectDetectionMonitoring/onDetection</code> and
+                  <code>/onStatus</code> events (also <code>/onLog</code>,
+                  <code>/onCollection</code>). Suitable for low-latency updates
+                  without continuous REST polling.
+                </td>
+              </tr>
+              <tr>
+                <td><b>MQTT client</b></td>
+                <td>
+                  Publish detection-result JSON to a configured broker/topic;
+                  typically for PLC gateways, integration services and plant
+                  systems. Requires the broker to be reachable and MQTT enabled
+                  in Settings.
+                </td>
+              </tr>
+              <tr>
+                <td><b>Device file endpoint</b></td>
+                <td>
+                  Download a captured PNG or prepared dataset ZIP using
+                  <code>GET /api/crown/file?filePath=…</code> after obtaining
+                  its path from the REST API.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <h2>Information carried by detection results</h2>
+          <table class="doc-table">
+            <thead>
+              <tr>
+                <th>Field</th>
+                <th>Purpose</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>modelId</code>, <code>modelName</code></td>
+                <td>
+                  Identifies which loaded detection network produced the result.
+                </td>
+              </tr>
+              <tr>
+                <td><code>timestamp</code>, <code>inferenceMs</code></td>
+                <td>Time of result and inference processing duration.</td>
+              </tr>
+              <tr>
+                <td><code>detections[]</code></td>
+                <td>
+                  The current list of recognized detections for that model;
+                  empty array means no recognized objects in that result.
+                </td>
+              </tr>
+              <tr>
+                <td><code>label</code>, <code>classId</code></td>
+                <td>Object class name and corresponding class ID.</td>
+              </tr>
+              <tr>
+                <td><code>score</code></td>
+                <td>Confidence value, typically in the 0–1 range.</td>
+              </tr>
+              <tr>
+                <td><code>box</code></td>
+                <td>
+                  2D normalized bounding coordinates; interpret against the
+                  image dimensions.
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <code>trackId</code>, <code>held</code>,
+                  <code>lastSeenMs</code>
+                </td>
+                <td>
+                  Optional temporal-tracking metadata, present when timing-based
+                  tracking is active. Held detection means a retained last-known
+                  box, not a new observation.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <h2>Important integration semantics</h2>
+          <ul>
+            <li>
+              Counts represent <b>current recognized objects</b>, including held
+              observations; they are not cumulative product totals or
+              unique-person identities.
+            </li>
+            <li>
+              Detection results can arrive per model and can include empty
+              detections. External clients should maintain state and tolerate
+              missing/late/repeated updates.
+            </li>
+            <li>
+              REST is a <b>request/response</b> interface, not a subscription
+              stream. Use Crown WebSocket or MQTT for push updates.
+            </li>
+            <li>
+              The configured inference period, preview refresh period and camera
+              FPS are independent. Do not assume every preview frame produces a
+              new inference.
+            </li>
+            <li>
+              Security and network access are controlled by the camera/system
+              deployment. Protect ports, TLS, credentials and broker access as
+              part of plant network engineering.
+            </li>
+          </ul>
+          <h2>Typical integration flow</h2>
+          <ol class="steps">
+            <li>
+              From an integration PC, verify IP connectivity and confirm the
+              camera UI opens.
+            </li>
+            <li>
+              Use <a href="rest-api.html">REST <code>getStatus</code></a> to
+              verify the model is loaded and monitoring is running.
+            </li>
+            <li>
+              Use REST <code>getNetworkModels</code> to discover configured
+              model IDs and classes.
+            </li>
+            <li>
+              For live updates, register on Crown WebSocket
+              <code>AIObjectDetectionMonitoring/onDetection</code> or enable
+              MQTT and subscribe to the configured topic.
+            </li>
+            <li>
+              Map normalized boxes, classes and confidence to your external
+              application, and treat held boxes and disconnects explicitly.
+            </li>
+            <li>
+              Test system restart, camera disconnection, empty results, license
+              restrictions and reconnection before production use.
+            </li>
+          </ol>
+          <p>
+            See <a href="mqtt-settings.html">MQTT configuration</a> for broker
+            settings and <a href="rest-api.html">REST API Reference</a> for all
+            callable functions and example requests.
+          </p>
+          <div class="footnav">
+            <span>← <a href="license.html">License Manager</a></span
+            ><span><a href="rest-api.html">REST API Reference</a> →</span>
+          </div>
+          <footer class="footer">
+            © SICK · Visionary AI Object Detection Monitoring · Application
+            v1.0.0 · Documentation v1.0.0.<br />
+          </footer>
+        </article>
+      </main>
+    </div>
+    <script src="../assets/js/manual.js"></script>
+  </body>
+</html>

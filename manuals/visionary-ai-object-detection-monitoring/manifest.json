@@ -1,0 +1,17 @@
+{
+  "slug": "visionary-ai-object-detection-monitoring",
+  "title": "Visionary AI Object Detection Monitoring End-User Manual",
+  "description": "Operating, monitoring, configuring, licensing, and integrating the Visionary AI Object Detection Monitoring application.",
+  "publicPath": "usage-manual",
+  "manualType": "End-user manual",
+  "latest": "v1.0.0",
+  "versions": [
+    {
+      "version": "v1.0.0",
+      "status": "Current",
+      "date": "2026-10-26",
+      "summary": "Initial publication of the operator and application engineer manual, including the REST API contract and optimized settings download.",
+      "compatibleAppVersions": ["1.0.0"]
+    }
+  ]
+}

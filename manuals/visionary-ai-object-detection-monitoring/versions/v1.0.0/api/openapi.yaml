@@ -1,0 +1,1625 @@
+openapi: 3.1.0
+info:
+  title: AI Object Detection Monitoring - External Control API
+  version: 1.0.0
+  description: "External control API of the **AIObjectDetectionMonitoring** AppSpace app. It runs AppSpace object-detection\n\
+    network models on the Visionary-B Two camera image, provides live results, status, logs and a live preview,\nmanages\
+    \ network models and persistent settings, and collects training images.\n\nBased on `sensor-app/AIObjectDetectionMonitoring/project.mf.xml`\
+    \ (v1.0.0, 2D-only).\n\n## Monitoring lifecycle\n`setMonitoringEnabled` persists the requested camera/detection preference.\
+    \ Both enabling and disabling\nrequire an app reload: disable stops monitoring immediately, while enable only saves\
+    \ the preference and\nleaves acquisition/inference stopped until reload. Use `reloadRequired` in status to detect\
+    \ pending changes.\n`getStatus.monitoringEnabled` is the current running state; `getSettings.monitoringEnabled` is\
+    \ the saved preference.\n\n## Temporal recognition\nEach model accepts `recognitionTimeMs` and `holdingTimeMs` as\
+    \ integer milliseconds from 0 to 600000\n(default 0). Recognition requires consecutive matched observations; holding\
+    \ retains a recognized track after a\nmissed observation until its last-seen holding deadline. Apply model changes\
+    \ by reloading the app.\nWith temporal filtering enabled, detections include model-local `trackId`, `held` and `lastSeenMs`.\n\
+    Held boxes/scores are last-known measurements, not current or predicted positions.\nTimer expiry can emit detection\
+    \ updates without a new inference. With both timings zero, the original\ndetection payload shape is preserved. These\
+    \ are box-based tracks, not persistent person identities.\n\n## Calling convention (device Crown REST API)\nEvery\
+    \ served function of the app is reachable as `POST /api/crown/AIObjectDetectionMonitoring/{function}`.\n\n* The request\
+    \ body is `{\"data\": {<parameters>}}`. Functions without parameters accept `{}`.\n* The response is `{\"header\"\
+    : {\"status\", \"message\"}, \"data\": {<return values>}}`.\n  `header.status` is `0` when the call was executed.\
+    \ Transport or parameter errors (for example a missing\n  parameter) are reported in the header with a non-zero status\
+    \ and an empty `data` object.\n* Functions that return `data`, `success` and `message` report application errors\
+    \ with `success=false` and a\n  machine-readable error code in `message` (for example `threshold_out_of_range`).\
+    \ The HTTP status stays 200.\n* `data` is usually a **JSON document encoded as a string**; decode it a second time.\
+    \ Parameters named\n  `dataJSON`, `namesJSON`, `classesJSON` are likewise JSON documents encoded as strings.\n* Binary\
+    \ values (`content`, `getLiveFrame.data`) are objects `{\"type\": \"binary\", \"encoding\": \"base64\", \"data\"\
+    : \"...\"}`.\n\n## Events\nEvents cannot be received through REST. Subscribe via the Crown websocket (`/crownJSON`\
+    \ or `/crownMSGPACK`),\nfunction `AIObjectDetectionMonitoring/register`, see the `webhooks` section for the event\
+    \ payloads.\nEach event carries one argument `data` containing the JSON string described there.\n\n## Not part of\
+    \ the external API\nFunctions and events whose name starts with `_` (and `OnDetectionResult`, `OnPreviewFrame`, `OnPreviewDemand`)\n\
+    are internal hand-offs between the main script and its sub-apps. They use non-serializable objects and are\nintentionally\
+    \ not exposed here.\n\n## Files\nCollected images and dataset ZIP files are downloaded with `GET /api/crown/file?filePath=<path>`\n\
+    (see the `Files` tag).\n"
+servers:
+- url: http://{host}:{port}/api/crown
+  description: AppSpace device
+  variables:
+    host:
+      default: 192.168.100.249
+    port:
+      default: '80'
+tags:
+- name: Status
+  description: Application status and device information.
+- name: Live preview
+  description: Live camera preview frames.
+- name: Settings
+  description: Persistent application settings and backups.
+- name: Network models
+  description: Management of AppSpace object-detection network models.
+- name: Image collection
+  description: Collection, download and deletion of training images.
+- name: System
+  description: Application lifecycle.
+- name: Files
+  description: Download of files stored on the device.
+paths:
+  /AIObjectDetectionMonitoring/getStatus:
+    post:
+      tags:
+      - Status
+      operationId: getStatus
+      summary: Get the application status
+      description: 'Gets the current application status: readiness, camera connection, runtime monitoring state, number
+        of stored and active models, maximum simultaneous models, detection worker states with DNN licence information,
+        app licence status and whether a reload is required. Paused workers are not counted as active models.'
+      requestBody:
+        $ref: '#/components/requestBodies/NoParameters'
+      responses:
+        '200':
+          description: '`message` is `OK`, `status_unavailable` or `response_encoding_failed`.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+              example:
+                header:
+                  status: 0
+                  message: Ok
+                data:
+                  data: '{"ready":true,"cameraConnected":true,"monitoringEnabled":true,"modelCount":2,"activeModelCount":2,"maxModels":4,"workers":[{"workerId":1,"modelId":"IndustrialFasteners","state":"ready","dnnLicense":{"level":"LIMITED","remainingSeconds":532}}],"licensing":{"active":true,"features":{"ObjectDetection":true,"CloseToGround":true,"PeopleDetection":true},"firmCode":6001264,"productCodes":[1140,1198,1223]},"reloadRequired":false}'
+                  success: true
+                  message: OK
+  /AIObjectDetectionMonitoring/setMonitoringEnabled:
+    post:
+      tags:
+      - Status
+      operationId: setMonitoringEnabled
+      summary: Stop or resume live camera view and object detection
+      description: Saves camera and detection enable preferences for all clients; both enabling and disabling require
+        reload. Saves the requested enable preference through CSK PersistentData before runtime changes. Reload and device
+        restart restore it; a stopped startup never starts camera acquisition or inference. Existing settings without
+        this preference default to enabled. Stop is rejected while automatic image collection or a manual capture is
+        pending. An inference already running may finish, but its result is discarded. Disabling immediately stops monitoring
+        and also persists reloadRequired=true with an incremented configurationRevision. Enabling also sets reloadRequired=true
+        and increments configurationRevision, but leaves acquisition and inference stopped until reload. Enable can be
+        staged alongside other pending settings. Successful startup clears the reload requirement and restores the saved
+        enable preference. Models remain loaded and camera ownership is retained until reload. Save failure leaves acquisition/inference
+        unchanged. A preview or native camera failure after saving retains the requested preference for reload recovery.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              additionalProperties: false
+              properties:
+                data:
+                  type: object
+                  required:
+                  - enabled
+                  additionalProperties: false
+                  properties:
+                    enabled:
+                      type: boolean
+                      description: False to stop immediately; true to enable after reload. Both changes require app reload.
+            examples:
+              disable:
+                summary: Stop immediately and persist disabled state for reload
+                value:
+                  data:
+                    enabled: false
+              enable:
+                summary: Save enabled preference; start acquisition and detection after reload
+                value:
+                  data:
+                    enabled: true
+      responses:
+        '200':
+          description: Current running status with success and message. A successful enable means the preference is saved;
+            monitoringEnabled remains false until reload. Message is OK, collection_busy, invalid_monitoring_state, monitoring_state_save_failed,
+            preview_control_failed, camera_stop_failed_reload_required or response_encoding_failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+  /AIObjectDetectionMonitoring/getDeviceName:
+    post:
+      tags:
+      - Status
+      operationId: getDeviceName
+      summary: Get the device type name
+      description: Gets the device type name, e.g. for display in the UI.
+      requestBody:
+        $ref: '#/components/requestBodies/NoParameters'
+      responses:
+        '200':
+          description: Always `success=true` and `message=OK`.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlainStringResponse'
+              example:
+                header:
+                  status: 0
+                  message: Ok
+                data:
+                  data: Visionary-B Two V3S146-1x
+                  success: true
+                  message: OK
+  /AIObjectDetectionMonitoring/getLiveFrame:
+    post:
+      tags:
+      - Live preview
+      operationId: getLiveFrame
+      summary: Get the latest live preview frame
+      description: Gets the latest bounded encoded frame from the live preview sub-app. Empty data means no recent frame
+        is available. Frames are only encoded while the preview is being requested.
+      requestBody:
+        $ref: '#/components/requestBodies/NoParameters'
+      responses:
+        '200':
+          description: Encoded preview image with its metadata.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - header
+                - data
+                properties:
+                  header:
+                    $ref: '#/components/schemas/CrownHeader'
+                  data:
+                    type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/BinaryValue'
+                      mimeType:
+                        type: string
+                        description: MIME type of the encoded image, e.g. `image/jpeg`.
+                        examples:
+                        - image/jpeg
+                      sequence:
+                        type: integer
+                        description: Increasing frame sequence number to detect new frames.
+                      width:
+                        type: integer
+                        description: Width of the encoded image in pixels.
+                      height:
+                        type: integer
+                        description: Height of the encoded image in pixels.
+  /AIObjectDetectionMonitoring/getSettings:
+    post:
+      tags:
+      - Settings
+      operationId: getSettings
+      summary: Get all settings
+      description: 'Gets all persistent application settings: camera, preview, detection, MQTT, logging, image collection,
+        network models, runtime limits and collection state. The MQTT password is returned empty.'
+      requestBody:
+        $ref: '#/components/requestBodies/NoParameters'
+      responses:
+        '200':
+          description: Settings as JSON string.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SettingsResponse'
+  /AIObjectDetectionMonitoring/updateSettings:
+    post:
+      tags:
+      - Settings
+      operationId: updateSettings
+      summary: Update settings
+      description: Validates and persists a partial settings update. Only supported fields are accepted; an empty MQTT
+        password keeps the stored one. Camera, preview, detection, MQTT, logging and model changes set `reloadRequired`
+        and take effect after an app reload (`reloadApps`); image collection settings apply immediately.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  required:
+                  - dataJSON
+                  properties:
+                    dataJSON:
+                      type: string
+                      description: JSON object with the settings sections and fields to change.
+                      contentMediaType: application/json
+                      contentSchema:
+                        $ref: '#/components/schemas/SettingsUpdate'
+            example:
+              data:
+                dataJSON: '{"imageCollection":{"intervalMs":2000,"maxImages":100}}'
+      responses:
+        '200':
+          description: '`message` is `OK` or a validation error such as `invalid_settings`, `no_supported_settings` or
+            a field-specific `*_out_of_range` code.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SettingsResponse'
+  /AIObjectDetectionMonitoring/exportSettings:
+    post:
+      tags:
+      - Settings
+      operationId: exportSettings
+      summary: Export a settings backup
+      description: Exports a portable settings backup with configuration, credentials, runtime limits and model settings.
+        Model files and captured images are not included.
+      requestBody:
+        $ref: '#/components/requestBodies/NoParameters'
+      responses:
+        '200':
+          description: Backup document as JSON string.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SettingsBackupResponse'
+  /AIObjectDetectionMonitoring/importSettings:
+    post:
+      tags:
+      - Settings
+      operationId: importSettings
+      summary: Import a settings backup
+      description: Validates and applies a settings backup created by `exportSettings`. Model entries must reference
+        model files already present on the device. The import is rejected while a timed image collection runs and is
+        rolled back if persisting fails; a reload is required afterwards.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  required:
+                  - dataJSON
+                  properties:
+                    dataJSON:
+                      type: string
+                      maxLength: 2097152
+                      description: Backup document as JSON string (max. 2 MB).
+                      contentMediaType: application/json
+                      contentSchema:
+                        $ref: '#/components/schemas/SettingsBackup'
+      responses:
+        '200':
+          description: '`message` is `reload_required` on success, otherwise an error such as `invalid_settings_backup`,
+            `backup_model_file_missing`, `collection_active` or `settings_persistence_failed`.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SettingsResponse'
+  /AIObjectDetectionMonitoring/getCameraControls:
+    post:
+      tags:
+      - Settings
+      operationId: getCameraControls
+      summary: Get the camera control schema
+      description: Gets the opt-in camera override schema and plug-and-play defaults.
+      requestBody:
+        $ref: '#/components/requestBodies/NoParameters'
+      responses:
+        '200':
+          description: Camera controls as JSON string.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CameraControlsResponse'
+  /AIObjectDetectionMonitoring/getNetworkModels:
+    post:
+      tags:
+      - Network models
+      operationId: getNetworkModels
+      summary: List network models
+      description: Gets all stored network models with their configuration.
+      requestBody:
+        $ref: '#/components/requestBodies/NoParameters'
+      responses:
+        '200':
+          description: JSON array of models as string.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NetworkModelsResponse'
+  /AIObjectDetectionMonitoring/uploadNetworkModel:
+    post:
+      tags:
+      - Network models
+      operationId: uploadNetworkModel
+      summary: Upload a network model
+      description: Stores a new AppSpace network model JSON file and adds it to the model list. The model is validated
+        by loading it on the device; class labels are read from the model to configure multi-class models. A reload is
+        required before the model is used.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  required:
+                  - fileName
+                  - objectType
+                  - content
+                  properties:
+                    fileName:
+                      type: string
+                      description: Model name; also used to derive the model ID and file name.
+                    objectType:
+                      type: string
+                      description: Object type shown for single-class models. Optional for multi-class models (defaults
+                        to the model name); send an empty string in that case.
+                    content:
+                      allOf:
+                      - $ref: '#/components/schemas/BinaryValue'
+                      description: Content of the AppSpace model JSON file.
+                    boxColor:
+                      type: string
+                      pattern: ^#[0-9A-Fa-f]{6}$
+                      description: Optional box color as `#RRGGBB`. Assigned automatically if omitted.
+                    classesJSON:
+                      type: string
+                      description: Optional JSON array of class colors `[{name, color}]` for multi-class models.
+                      contentMediaType: application/json
+                      contentSchema:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/ModelClass'
+                    threshold:
+                      type: number
+                      format: float
+                      minimum: 0
+                      maximum: 1
+                      default: 0.5
+                      description: Optional confidence threshold between 0 and 1.
+                    recognitionTimeMs:
+                      $ref: '#/components/schemas/RecognitionTime'
+                    holdingTimeMs:
+                      $ref: '#/components/schemas/HoldingTime'
+      responses:
+        '200':
+          description: '`message` is `OK` or an error such as `invalid_model_json`, `model_file_too_large`, `object_type_required`,
+            `threshold_out_of_range`, `invalid_recognition_timing`, `model_already_exists`, `model_storage_limit_reached`
+            or `unsupported_network_model`.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NetworkModelResponse'
+  /AIObjectDetectionMonitoring/updateNetworkModel:
+    post:
+      tags:
+      - Network models
+      operationId: updateNetworkModel
+      summary: Update a network model configuration
+      description: Updates the configuration of a stored model (name, object type, threshold, enabled state, box or class
+        colors, recognitionTimeMs and holdingTimeMs) without changing its file. A reload is required to apply the change.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  required:
+                  - dataJSON
+                  properties:
+                    dataJSON:
+                      type: string
+                      description: JSON object with the model `id` and the fields to change.
+                      contentMediaType: application/json
+                      contentSchema:
+                        $ref: '#/components/schemas/NetworkModelUpdate'
+      responses:
+        '200':
+          description: '`message` is `OK` or an error such as `model_not_found`, `threshold_out_of_range`, `invalid_box_color`
+            or `invalid_model_settings`, `invalid_recognition_timing`.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NetworkModelResponse'
+  /AIObjectDetectionMonitoring/updateNetworkModelFile:
+    post:
+      tags:
+      - Network models
+      operationId: updateNetworkModelFile
+      summary: Replace a network model file
+      description: Replaces the file of a stored model and optionally updates its configuration. The new file is first
+        validated from a temporary copy and only then written over the existing model file; class colors are kept for
+        classes with the same name. A successful replacement always sets `reloadRequired` (see `getStatus` / `onStatus`),
+        even when the model settings are unchanged; the new file is used after `reloadApps`.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  required:
+                  - dataJSON
+                  - content
+                  properties:
+                    dataJSON:
+                      type: string
+                      description: JSON object with the model `id` and optional name, objectType, threshold, enabled,
+                        boxColor and classes, recognitionTimeMs and holdingTimeMs. A `filePath` (as returned by `getNetworkModels`)
+                        is accepted but ignored; other unknown fields are rejected with `invalid_model_settings`.
+                      contentMediaType: application/json
+                      contentSchema:
+                        $ref: '#/components/schemas/NetworkModelUpdate'
+                    content:
+                      allOf:
+                      - $ref: '#/components/schemas/BinaryValue'
+                      description: Content of the replacement AppSpace model JSON file.
+      responses:
+        '200':
+          description: '`message` is `OK` or an error such as `model_not_found`, `invalid_model_settings`, `invalid_model_upload`,
+            `model_file_too_large`, `invalid_model_json`, `threshold_out_of_range`, `object_type_required`, `invalid_box_color`,
+            `invalid_recognition_timing`, `unsupported_network_model` or `model_write_failed`.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NetworkModelResponse'
+  /AIObjectDetectionMonitoring/deleteNetworkModel:
+    post:
+      tags:
+      - Network models
+      operationId: deleteNetworkModel
+      summary: Delete a network model
+      description: Stops a model's detection worker, deletes its file and removes it from the model list.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  required:
+                  - id
+                  properties:
+                    id:
+                      type: string
+                      description: ID of the model to delete.
+            example:
+              data:
+                id: IndustrialFasteners
+      responses:
+        '200':
+          description: '`message` is `OK` or `model_not_found`.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BooleanResponse'
+  /AIObjectDetectionMonitoring/startImageCollection:
+    post:
+      tags:
+      - Image collection
+      operationId: startImageCollection
+      summary: Start a timed image collection
+      description: Starts a timed image collection run that stores one camera image per configured interval until the
+        configured maximum number of new images is reached. Existing images are kept and manual captures remain possible.
+      requestBody:
+        $ref: '#/components/requestBodies/NoParameters'
+      responses:
+        '200':
+          description: '`success` is true if the run started or is already running; `message` is `OK` or `camera_unavailable`.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectionStateResponse'
+  /AIObjectDetectionMonitoring/captureCollectionImage:
+    post:
+      tags:
+      - Image collection
+      operationId: captureCollectionImage
+      summary: Capture one collection image
+      description: Stores the next camera image as one collection image. Works with or without a running timed collection;
+        completion is notified via the `onCollection` event.
+      requestBody:
+        $ref: '#/components/requestBodies/NoParameters'
+      responses:
+        '200':
+          description: '`data` has `capturePending` set. `message` is `OK` or an error such as `capture_pending` or `camera_unavailable`.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectionStateResponse'
+  /AIObjectDetectionMonitoring/stopImageCollection:
+    post:
+      tags:
+      - Image collection
+      operationId: stopImageCollection
+      summary: Stop the timed image collection
+      description: Stops a running timed image collection. Stored images are kept.
+      requestBody:
+        $ref: '#/components/requestBodies/NoParameters'
+      responses:
+        '200':
+          description: Collection state as JSON string.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectionStateResponse'
+  /AIObjectDetectionMonitoring/getCollectionImages:
+    post:
+      tags:
+      - Image collection
+      operationId: getCollectionImages
+      summary: List collection images
+      description: Lists all stored collection images in capture order. Images are full-resolution camera color images
+        stored as lossless RGB PNG (independent of the live preview size and JPEG quality). They can be downloaded via
+        the device file endpoint using their path.
+      requestBody:
+        $ref: '#/components/requestBodies/NoParameters'
+      responses:
+        '200':
+          description: JSON array of images as string.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectionImagesResponse'
+  /AIObjectDetectionMonitoring/prepareDatasetDownload:
+    post:
+      tags:
+      - Image collection
+      operationId: prepareDatasetDownload
+      summary: Create a ZIP of selected images
+      description: Creates a temporary ZIP archive containing the selected collection images for download. Download it
+        with `GET /api/crown/file?filePath=<path>` and call `acknowledgeDatasetDownload` afterwards to remove the ZIP.
+      requestBody:
+        $ref: '#/components/requestBodies/ImageNames'
+      responses:
+        '200':
+          description: '`message` is `OK` or an error such as `invalid_image_selection` or `archive_failed`.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatasetDownloadResponse'
+  /AIObjectDetectionMonitoring/acknowledgeDatasetDownload:
+    post:
+      tags:
+      - Image collection
+      operationId: acknowledgeDatasetDownload
+      summary: Remove the temporary dataset ZIP
+      description: Deletes the temporary dataset ZIP after the client downloaded it. Collected images are not deleted.
+      requestBody:
+        $ref: '#/components/requestBodies/NoParameters'
+      responses:
+        '200':
+          description: '`message` is `OK` or `dataset_delete_failed`.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BooleanResponse'
+  /AIObjectDetectionMonitoring/deleteCollectionImages:
+    post:
+      tags:
+      - Image collection
+      operationId: deleteCollectionImages
+      summary: Delete selected collection images
+      description: Deletes the selected collection images. Rejected while a timed collection runs or a capture is pending.
+      requestBody:
+        $ref: '#/components/requestBodies/ImageNames'
+      responses:
+        '200':
+          description: '`message` is `OK` or an error such as `invalid_image_selection`, `collection_busy` or `image_delete_failed`.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteImagesResponse'
+  /AIObjectDetectionMonitoring/reloadApps:
+    post:
+      tags:
+      - System
+      operationId: reloadApps
+      summary: Reload all apps
+      description: Marks the app as not ready and reloads all apps on the device to apply configuration and model changes.
+        The function has no return values; the device is unavailable for a short time afterwards.
+      requestBody:
+        $ref: '#/components/requestBodies/NoParameters'
+      responses:
+        '200':
+          description: Reload was triggered. `data` is empty.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - header
+                properties:
+                  header:
+                    $ref: '#/components/schemas/CrownHeader'
+                  data:
+                    type: object
+  /file:
+    get:
+      servers:
+      - url: http://{host}:{port}/api/crown
+        variables:
+          host:
+            default: 192.168.100.249
+          port:
+            default: '80'
+      tags:
+      - Files
+      operationId: downloadFile
+      summary: Download a file from the device
+      description: Downloads a file stored on the device, e.g. a collection image or a dataset ZIP returned by `getCollectionImages`
+        and `prepareDatasetDownload`, or the application log. Range requests are not supported.
+      parameters:
+      - name: filePath
+        in: query
+        required: true
+        description: Absolute path on the device, e.g. `/public/AIObjectDetectionMonitoring.log`.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: File content.
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+webhooks:
+  onDetection:
+    post:
+      tags:
+      - Status
+      operationId: eventOnDetection
+      summary: 'Event: onDetection'
+      description: Notifies the latest detection result of one network model. Emitted for every processed frame per model
+        and with an empty detection list when a model is stopped or its inference fails. With temporal filtering enabled,
+        detections additionally include model-local trackId, held (last-known observation) and lastSeenMs. Timer expiry
+        may publish results without a new inference. Subscribe with the Crown websocket to `AIObjectDetectionMonitoring/onDetection`.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventOnDetection'
+      responses:
+        '200':
+          description: Event delivered.
+  onStatus:
+    post:
+      tags:
+      - Status
+      operationId: eventOnStatus
+      summary: 'Event: onStatus'
+      description: 'Notifies application status changes: readiness, camera connection, detection worker states, licence
+        information and whether an app reload is required to apply configuration changes. monitoringEnabled is the current
+        runtime state initialized from the persistent preference. Workers may be paused while monitoring is stopped.
+        Subscribe to `AIObjectDetectionMonitoring/onStatus`.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventOnStatus'
+      responses:
+        '200':
+          description: Event delivered.
+  onLog:
+    post:
+      tags:
+      - Status
+      operationId: eventOnLog
+      summary: 'Event: onLog'
+      description: Notifies a live application log entry that passes the configured logging level. Subscribe to `AIObjectDetectionMonitoring/onLog`.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventOnLog'
+      responses:
+        '200':
+          description: Event delivered.
+  onCollection:
+    post:
+      tags:
+      - Image collection
+      operationId: eventOnCollection
+      summary: 'Event: onCollection'
+      description: Notifies image collection state changes, e.g. after a captured frame, the end of a timed collection
+        run, a capture timeout or deleted images. Subscribe to `AIObjectDetectionMonitoring/onCollection`.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventOnCollection'
+      responses:
+        '200':
+          description: Event delivered.
+components:
+  requestBodies:
+    NoParameters:
+      required: false
+      description: The function has no parameters. Send `{}`.
+      content:
+        application/json:
+          schema:
+            type: object
+            additionalProperties: false
+          example: {}
+    ImageNames:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - data
+            properties:
+              data:
+                type: object
+                required:
+                - namesJSON
+                properties:
+                  namesJSON:
+                    type: string
+                    description: JSON array of image file names as returned by `getCollectionImages`.
+                    contentMediaType: application/json
+                    contentSchema:
+                      type: array
+                      items:
+                        type: string
+          example:
+            data:
+              namesJSON: '["image_0001.png","image_0002.png"]'
+  schemas:
+    CrownHeader:
+      type: object
+      required:
+      - status
+      - message
+      properties:
+        status:
+          type: integer
+          description: '`0` if the call was executed; non-zero for transport, lookup or parameter errors (e.g. `5` Not
+            Found, `3` wrong parameters).'
+        message:
+          type: string
+    Result:
+      type: object
+      description: Return values shared by almost all functions.
+      required:
+      - data
+      - success
+      - message
+      properties:
+        data:
+          type: string
+          description: JSON document encoded as string.
+        success:
+          type: boolean
+        message:
+          type: string
+          description: '`OK` or a machine-readable error code.'
+    BinaryValue:
+      type: object
+      required:
+      - type
+      - encoding
+      - data
+      properties:
+        type:
+          type: string
+          const: binary
+        encoding:
+          type: string
+          enum:
+          - base64
+        mimetype:
+          type: string
+          examples:
+          - application/json
+        data:
+          type: string
+          description: Base64 encoded content.
+    PlainStringResponse:
+      type: object
+      required:
+      - header
+      - data
+      properties:
+        header:
+          $ref: '#/components/schemas/CrownHeader'
+        data:
+          $ref: '#/components/schemas/Result'
+    BooleanResponse:
+      type: object
+      required:
+      - header
+      - data
+      properties:
+        header:
+          $ref: '#/components/schemas/CrownHeader'
+        data:
+          allOf:
+          - $ref: '#/components/schemas/Result'
+          - properties:
+              data:
+                type: string
+                contentMediaType: application/json
+                contentSchema:
+                  type: boolean
+                description: JSON `true` if the operation succeeded.
+    StatusResponse:
+      type: object
+      required:
+      - header
+      - data
+      properties:
+        header:
+          $ref: '#/components/schemas/CrownHeader'
+        data:
+          allOf:
+          - $ref: '#/components/schemas/Result'
+          - properties:
+              data:
+                type: string
+                contentMediaType: application/json
+                contentSchema:
+                  $ref: '#/components/schemas/Status'
+    SettingsResponse:
+      type: object
+      required:
+      - header
+      - data
+      properties:
+        header:
+          $ref: '#/components/schemas/CrownHeader'
+        data:
+          allOf:
+          - $ref: '#/components/schemas/Result'
+          - properties:
+              data:
+                type: string
+                contentMediaType: application/json
+                contentSchema:
+                  $ref: '#/components/schemas/Settings'
+    SettingsBackupResponse:
+      type: object
+      required:
+      - header
+      - data
+      properties:
+        header:
+          $ref: '#/components/schemas/CrownHeader'
+        data:
+          allOf:
+          - $ref: '#/components/schemas/Result'
+          - properties:
+              data:
+                type: string
+                contentMediaType: application/json
+                contentSchema:
+                  $ref: '#/components/schemas/SettingsBackup'
+    CameraControlsResponse:
+      type: object
+      required:
+      - header
+      - data
+      properties:
+        header:
+          $ref: '#/components/schemas/CrownHeader'
+        data:
+          allOf:
+          - $ref: '#/components/schemas/Result'
+          - properties:
+              data:
+                type: string
+                contentMediaType: application/json
+                contentSchema:
+                  $ref: '#/components/schemas/CameraControls'
+    NetworkModelsResponse:
+      type: object
+      required:
+      - header
+      - data
+      properties:
+        header:
+          $ref: '#/components/schemas/CrownHeader'
+        data:
+          allOf:
+          - $ref: '#/components/schemas/Result'
+          - properties:
+              data:
+                type: string
+                contentMediaType: application/json
+                contentSchema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/NetworkModel'
+    NetworkModelResponse:
+      type: object
+      required:
+      - header
+      - data
+      properties:
+        header:
+          $ref: '#/components/schemas/CrownHeader'
+        data:
+          allOf:
+          - $ref: '#/components/schemas/Result'
+          - properties:
+              data:
+                type: string
+                contentMediaType: application/json
+                contentSchema:
+                  $ref: '#/components/schemas/NetworkModel'
+    CollectionStateResponse:
+      type: object
+      required:
+      - header
+      - data
+      properties:
+        header:
+          $ref: '#/components/schemas/CrownHeader'
+        data:
+          allOf:
+          - $ref: '#/components/schemas/Result'
+          - properties:
+              data:
+                type: string
+                contentMediaType: application/json
+                contentSchema:
+                  $ref: '#/components/schemas/CollectionState'
+    CollectionImagesResponse:
+      type: object
+      required:
+      - header
+      - data
+      properties:
+        header:
+          $ref: '#/components/schemas/CrownHeader'
+        data:
+          allOf:
+          - $ref: '#/components/schemas/Result'
+          - properties:
+              data:
+                type: string
+                contentMediaType: application/json
+                contentSchema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/CollectionImage'
+    DatasetDownloadResponse:
+      type: object
+      required:
+      - header
+      - data
+      properties:
+        header:
+          $ref: '#/components/schemas/CrownHeader'
+        data:
+          allOf:
+          - $ref: '#/components/schemas/Result'
+          - properties:
+              data:
+                type: string
+                contentMediaType: application/json
+                contentSchema:
+                  type: object
+                  properties:
+                    path:
+                      type: string
+                      description: Device path of the ZIP file; pass it to `GET /file?filePath=`.
+                    count:
+                      type: integer
+                      description: Number of included images.
+    DeleteImagesResponse:
+      type: object
+      required:
+      - header
+      - data
+      properties:
+        header:
+          $ref: '#/components/schemas/CrownHeader'
+        data:
+          allOf:
+          - $ref: '#/components/schemas/Result'
+          - properties:
+              data:
+                type: string
+                contentMediaType: application/json
+                contentSchema:
+                  type: object
+                  properties:
+                    deleted:
+                      type: integer
+                      description: Number of deleted images.
+                    state:
+                      $ref: '#/components/schemas/CollectionState'
+    Status:
+      type: object
+      description: Application status (payload of `getStatus` and the `onStatus` event; `activeModelCount` and `maxModels`
+        are only part of `getStatus`).
+      properties:
+        ready:
+          type: boolean
+        cameraConnected:
+          type: boolean
+        monitoringEnabled:
+          type: boolean
+          description: Current camera acquisition and inference state, initialized from the persistent enable preference
+            on startup.
+        modelCount:
+          type: integer
+        activeModelCount:
+          type: integer
+          description: Number of active workers, excluding error, idle and paused workers. Returned by getStatus only.
+        maxModels:
+          type: integer
+        workers:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkerStatus'
+        licensing:
+          type: object
+          description: App licence status (informational only; detection is never blocked by it).
+          properties:
+            active:
+              type: boolean
+            features:
+              type: object
+              properties:
+                ObjectDetection:
+                  type: boolean
+                CloseToGround:
+                  type: boolean
+                PeopleDetection:
+                  type: boolean
+            firmCode:
+              type: integer
+            productCodes:
+              type: array
+              items:
+                type: integer
+        reloadRequired:
+          type: boolean
+          description: True if configuration or monitoring enable/disable changes require an app reload.
+    WorkerStatus:
+      type: object
+      properties:
+        workerId:
+          type: integer
+        modelId:
+          type: string
+        state:
+          type: string
+          enum:
+          - starting
+          - ready
+          - license_blocked
+          - error
+          - idle
+          - paused
+        dnnLicense:
+          $ref: '#/components/schemas/DnnLicense'
+    DnnLicense:
+      type: object
+      description: Device DNN inference licence (CodeMeter CLASSIFICATION 1003).
+      properties:
+        level:
+          type:
+          - string
+          - 'null'
+          enum:
+          - BLOCKED
+          - LIMITED
+          - FULL
+          - null
+        remainingSeconds:
+          type:
+          - number
+          - 'null'
+          description: Remaining trial time in seconds.
+    ModelClass:
+      type: object
+      required:
+      - name
+      - color
+      properties:
+        name:
+          type: string
+        color:
+          type: string
+          pattern: ^#[0-9A-Fa-f]{6}$
+    RecognitionTime:
+      type: integer
+      minimum: 0
+      maximum: 600000
+      default: 0
+      description: Consecutive per-object observation duration in milliseconds before recognition. Applies to every model
+        class. Zero disables recognition delay; changes require app reload.
+    HoldingTime:
+      type: integer
+      minimum: 0
+      maximum: 600000
+      default: 0
+      description: Retain recognized tracks since their last observation for this many milliseconds after a miss. Zero
+        disables holding. Held boxes are last-known positions, not current measurements.
+    NetworkModel:
+      type: object
+      required:
+      - id
+      - name
+      - objectType
+      - threshold
+      - enabled
+      properties:
+        recognitionTimeMs:
+          $ref: '#/components/schemas/RecognitionTime'
+        holdingTimeMs:
+          $ref: '#/components/schemas/HoldingTime'
+        id:
+          type: string
+        name:
+          type: string
+        objectType:
+          type: string
+        threshold:
+          type: number
+          minimum: 0
+          maximum: 1
+        enabled:
+          type: boolean
+        boxColor:
+          type: string
+          pattern: ^#[0-9A-Fa-f]{6}$
+        classes:
+          type: array
+          description: Present for multi-class models.
+          items:
+            $ref: '#/components/schemas/ModelClass'
+        filePath:
+          type: string
+    NetworkModelUpdate:
+      type: object
+      required:
+      - id
+      properties:
+        recognitionTimeMs:
+          $ref: '#/components/schemas/RecognitionTime'
+        holdingTimeMs:
+          $ref: '#/components/schemas/HoldingTime'
+        id:
+          type: string
+        name:
+          type: string
+        objectType:
+          type: string
+        threshold:
+          type: number
+          minimum: 0
+          maximum: 1
+        enabled:
+          type: boolean
+        boxColor:
+          type: string
+          pattern: ^#[0-9A-Fa-f]{6}$
+        classes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ModelClass'
+        filePath:
+          type: string
+          description: Ignored; the device keeps the stored file path.
+    CollectionState:
+      type: object
+      properties:
+        active:
+          type: boolean
+          description: Timed collection is running.
+        count:
+          type: integer
+          description: Number of stored images.
+        mode:
+          type: string
+          enum:
+          - idle
+          - manual
+          - automatic
+        capturePending:
+          type: boolean
+          description: A manual capture is waiting for a frame.
+        error:
+          type: string
+    CollectionImage:
+      type: object
+      properties:
+        name:
+          type: string
+        path:
+          type: string
+          description: Device path, usable with `GET /file?filePath=`.
+    CameraOverride:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+        values:
+          type: object
+          additionalProperties:
+            type:
+            - number
+            - boolean
+            - string
+    CameraSettings:
+      type: object
+      properties:
+        includeDepthMap:
+          type: boolean
+        sdkOverrides:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/CameraOverride'
+        framesPerSecond:
+          type: number
+        acquisitionMode:
+          type: string
+          enum:
+          - HDR
+          - NORMAL
+        redGain:
+          type: number
+        greenGain:
+          type: number
+        blueGain:
+          type: number
+        autoExposureEnabled:
+          type: boolean
+        autoExposureSensitivity:
+          type: number
+        autoExposureHistogramCenter:
+          type: number
+        autoExposureCenterBinsDelta:
+          type: number
+        depthValidationEnabled:
+          type: boolean
+        depthValidationLevel:
+          type: number
+        histogramEqualizationEnabled:
+          type: boolean
+        histogramEqualizationAveraging:
+          type: boolean
+    PreviewSettings:
+      type: object
+      properties:
+        captureIntervalMs:
+          type: integer
+        pollingIntervalMs:
+          type: integer
+        maxWidth:
+          type: integer
+        jpegQuality:
+          type: integer
+        staleTimeoutMs:
+          type: integer
+        requestTimeoutMs:
+          type: integer
+    DetectionSettings:
+      type: object
+      properties:
+        cycleTimeMs:
+          type: integer
+          minimum: 1000
+        nmsThreshold:
+          type: number
+        nmsStrategy:
+          type: string
+    MqttSettings:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+        host:
+          type: string
+        port:
+          type: integer
+        topic:
+          type: string
+        clientId:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+          description: Returned empty by the API; an empty value on update keeps the stored password.
+        tlsEnabled:
+          type: boolean
+    LoggingSettings:
+      type: object
+      properties:
+        level:
+          type: string
+          enum:
+          - ERROR
+          - WARNING
+          - INFO
+          - DEBUG
+        maxEntries:
+          type: integer
+        maxSizeMB:
+          type: integer
+    ImageCollectionSettings:
+      type: object
+      properties:
+        intervalMs:
+          type: integer
+          description: Interval between images of a timed collection.
+        maxImages:
+          type: integer
+          description: Number of new images after which a timed collection stops.
+    Settings:
+      type: object
+      properties:
+        monitoringEnabled:
+          type: boolean
+          description: Saved monitoring enable preference. Change via setMonitoringEnabled, not updateSettings.
+        camera:
+          $ref: '#/components/schemas/CameraSettings'
+        preview:
+          $ref: '#/components/schemas/PreviewSettings'
+        detection:
+          $ref: '#/components/schemas/DetectionSettings'
+        mqtt:
+          $ref: '#/components/schemas/MqttSettings'
+        logging:
+          $ref: '#/components/schemas/LoggingSettings'
+        imageCollection:
+          $ref: '#/components/schemas/ImageCollectionSettings'
+        models:
+          type: array
+          items:
+            $ref: '#/components/schemas/NetworkModel'
+        collection:
+          $ref: '#/components/schemas/CollectionState'
+        runtime:
+          type: object
+          description: Runtime limits (e.g. `RESULT_QUEUE_SIZE`, `PREVIEW_INTERVAL_MS`).
+          additionalProperties:
+            type: number
+        reloadRequired:
+          type: boolean
+        configurationRevision:
+          type: integer
+    SettingsUpdate:
+      type: object
+      description: Partial update; only the listed sections and fields are accepted.
+      properties:
+        camera:
+          $ref: '#/components/schemas/CameraSettings'
+        preview:
+          $ref: '#/components/schemas/PreviewSettings'
+        detection:
+          $ref: '#/components/schemas/DetectionSettings'
+        mqtt:
+          $ref: '#/components/schemas/MqttSettings'
+        logging:
+          $ref: '#/components/schemas/LoggingSettings'
+        imageCollection:
+          $ref: '#/components/schemas/ImageCollectionSettings'
+    SettingsBackup:
+      type: object
+      required:
+      - format
+      - version
+      - settings
+      - models
+      properties:
+        format:
+          type: string
+          const: AIObjectDetectionMonitoring.settings
+        version:
+          type: integer
+          const: 1
+        settings:
+          $ref: '#/components/schemas/SettingsUpdate'
+        models:
+          type: array
+          items:
+            $ref: '#/components/schemas/NetworkModel'
+        runtime:
+          type: object
+          additionalProperties:
+            type: number
+    CameraControls:
+      type: object
+      properties:
+        overrides:
+          type: array
+          description: Available advanced camera controls with parameters and limits.
+          items:
+            $ref: '#/components/schemas/CameraControl'
+        defaults:
+          $ref: '#/components/schemas/CameraSettings'
+        previewDefaults:
+          $ref: '#/components/schemas/PreviewSettings'
+    CameraControl:
+      type: object
+      properties:
+        method:
+          type: string
+        group:
+          type: string
+        manual:
+          type: boolean
+        hdr:
+          type: boolean
+        parameters:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              kind:
+                type: string
+                enum:
+                - number
+                - boolean
+                - select
+              default:
+                type:
+                - number
+                - boolean
+                - string
+              minimum:
+                type: number
+              maximum:
+                type: number
+              integer:
+                type: boolean
+              locked:
+                type: boolean
+              options:
+                type: array
+                items:
+                  type: string
+    Detection:
+      type: object
+      properties:
+        trackId:
+          type: integer
+          description: Model-local temporal track ID; resets with worker lifecycle, not persistent identity.
+        held:
+          type: boolean
+          description: True for a held last-known observation. Counts include held tracks.
+        lastSeenMs:
+          type: integer
+          description: Timestamp of the last actual observation, in Unix milliseconds.
+        label:
+          type: string
+        classId:
+          type: integer
+        score:
+          type: number
+          minimum: 0
+          maximum: 1
+        boxColor:
+          type: string
+        box:
+          type: object
+          description: Bounding box normalized to 0..1 of the image size.
+          properties:
+            x:
+              type: number
+            y:
+              type: number
+            width:
+              type: number
+            height:
+              type: number
+    DetectionResult:
+      type: object
+      properties:
+        modelId:
+          type: string
+        modelName:
+          type: string
+        objectType:
+          type: string
+        boxColor:
+          type: string
+        timestamp:
+          type: integer
+          description: Frame timestamp, or temporal timer update timestamp, in ms (Unix time). lastSeenMs identifies
+            the actual observation for each tracked detection.
+        inferenceMs:
+          type: integer
+        dnnLicense:
+          $ref: '#/components/schemas/DnnLicense'
+        detections:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detection'
+    LogEntry:
+      type: object
+      properties:
+        level:
+          type: string
+          enum:
+          - ERROR
+          - WARNING
+          - INFO
+          - DEBUG
+        message:
+          type: string
+        time:
+          type: string
+          description: Unix timestamp in ms as string.
+    EventOnDetection:
+      type: object
+      description: Event argument carrying a `DetectionResult` as JSON string.
+      properties:
+        data:
+          type: string
+          contentMediaType: application/json
+          contentSchema:
+            $ref: '#/components/schemas/DetectionResult'
+    EventOnStatus:
+      type: object
+      properties:
+        data:
+          type: string
+          contentMediaType: application/json
+          contentSchema:
+            $ref: '#/components/schemas/Status'
+    EventOnLog:
+      type: object
+      properties:
+        data:
+          type: string
+          contentMediaType: application/json
+          contentSchema:
+            $ref: '#/components/schemas/LogEntry'
+    EventOnCollection:
+      type: object
+      properties:
+        data:
+          type: string
+          contentMediaType: application/json
+          contentSchema:
+            $ref: '#/components/schemas/CollectionState'

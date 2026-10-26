@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      name="description"
+      content="SICK Visionary AI Object Detection Monitoring operator and application engineer manual v1.0.0"
+    />
+    <title>
+      Monitoring Page · Visionary AI Object Detection Monitoring · SICK
+    </title>
+    <link
+      rel="icon"
+      type="image/webp"
+      href="../assets/images/brand/sick-s-logo.webp"
+    />
+    <link rel="stylesheet" href="../assets/css/manual.css" />
+  </head>
+  <body data-page="monitoring.html">
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="brand">
+          <a href="../index.html"
+            ><img src="../assets/images/brand/sick-logo.svg" alt="SICK"
+          /></a>
+          <h1>Visionary AI Object Detection Monitoring</h1>
+          <p>End-User Manual · v1.0.0<br />Application · v1.0.0<br />SICK</p>
+        </div>
+        <nav class="nav" aria-label="Manual sections">
+          <div class="nav-group">Start here</div>
+          <a href="../index.html" data-current="index.html" class=""
+            >Overview & Quick Start</a
+          ><a href="how-it-works.html" data-current="how-it-works.html" class=""
+            >How the System Works</a
+          >
+          <div class="nav-group">Use the application</div>
+          <a
+            href="monitoring.html"
+            data-current="monitoring.html"
+            class="active"
+            >Monitoring Page</a
+          ><a
+            href="network-models.html"
+            data-current="network-models.html"
+            class=""
+            >Network Models Page</a
+          ><a
+            href="image-collection.html"
+            data-current="image-collection.html"
+            class=""
+            >Image Collection Page</a
+          ><a
+            href="log-monitoring.html"
+            data-current="log-monitoring.html"
+            class=""
+            >Log Monitoring Page</a
+          >
+          <div class="nav-group">Configure the application</div>
+          <a href="settings.html" data-current="settings.html" class=""
+            >Settings Overview & Backup</a
+          ><a
+            href="camera-settings.html"
+            data-current="camera-settings.html"
+            class=""
+            >Camera Settings</a
+          ><a
+            href="live-streaming-settings.html"
+            data-current="live-streaming-settings.html"
+            class=""
+            >Live Streaming Settings</a
+          ><a
+            href="object-detection-settings.html"
+            data-current="object-detection-settings.html"
+            class=""
+            >Object Detection Settings</a
+          ><a
+            href="mqtt-settings.html"
+            data-current="mqtt-settings.html"
+            class=""
+            >MQTT Client Settings</a
+          ><a
+            href="logging-settings.html"
+            data-current="logging-settings.html"
+            class=""
+            >Logging Settings</a
+          ><a href="license.html" data-current="license.html" class=""
+            >License Manager</a
+          >
+          <div class="nav-group">External access & support</div>
+          <a href="integrations.html" data-current="integrations.html" class=""
+            >Integration & Data Outputs</a
+          ><a href="rest-api.html" data-current="rest-api.html" class=""
+            >REST API Reference</a
+          ><a
+            href="troubleshooting.html"
+            data-current="troubleshooting.html"
+            class=""
+            >Troubleshooting</a
+          ><a
+            href="quick-reference.html"
+            data-current="quick-reference.html"
+            class=""
+            >Quick Reference</a
+          >
+        </nav>
+      </aside>
+      <main class="main">
+        <header class="topbar">
+          <button class="mobile-menu" id="mobileMenu" type="button">
+            ☰ Menu
+          </button>
+          <div class="title">Monitoring Page</div>
+          <div class="meta">Application v1.0.0 · Documentation v1.0.0</div>
+        </header>
+        <article class="content">
+          <div class="kicker">Daily operation</div>
+          <h1>Monitoring Page</h1>
+          <p class="page-intro">
+            Primary operator view: see the current camera scene, detected object
+            outlines and live counts. Open <b>Monitoring</b> from the
+            application menu.
+          </p>
+          <figure class="figure">
+            <img
+              loading="lazy"
+              src="../assets/images/ui/monitoring_7.webp"
+              alt="Primary Monitoring page: Human detection with live class count"
+            />
+            <figcaption>
+              Primary Monitoring page: Human detection with live class count —
+              click to enlarge.
+            </figcaption>
+          </figure>
+          <h2>What you see</h2>
+          <table class="doc-table">
+            <thead>
+              <tr>
+                <th>UI element</th>
+                <th>Meaning / expected result</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><b>Camera image</b></td>
+                <td>
+                  Live browser preview of the Visionary B-Two color frame. A
+                  black or waiting area can mean monitoring is stopped, the
+                  camera is unavailable, or a frame is not yet ready.
+                </td>
+              </tr>
+              <tr>
+                <td><b>Detection bounding box</b></td>
+                <td>
+                  Colored rectangle showing a recognized region; its label shows
+                  class name and confidence as a percentage.
+                </td>
+              </tr>
+              <tr>
+                <td><b>Held box</b></td>
+                <td>
+                  Dashed/faded rectangle marked as held. The last known location
+                  is retained temporarily; it is not a fresh observation.
+                </td>
+              </tr>
+              <tr>
+                <td><b>Live object quantities</b></td>
+                <td>
+                  Right-hand model and class totals. Expand/collapse the side
+                  panel with its arrow.
+                </td>
+              </tr>
+              <tr>
+                <td><b>Checkboxes</b></td>
+                <td>
+                  Show/hide a model’s boxes or an individual class’s boxes. This
+                  changes only what the browser displays, not model execution or
+                  external outputs.
+                </td>
+              </tr>
+              <tr>
+                <td><b>Camera connected / App ready</b></td>
+                <td>
+                  Header connection and readiness indicators. Both should
+                  normally be positive during operation.
+                </td>
+              </tr>
+              <tr>
+                <td><b>Notification bell</b></td>
+                <td>
+                  Shows license, camera, inference and application log warnings
+                  when available.
+                </td>
+              </tr>
+              <tr>
+                <td><b>Top-right ⋮ → Reload app</b></td>
+                <td>
+                  Restarts the application(s) to apply configuration or model
+                  changes; monitoring is temporarily interrupted.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <h2>Normal monitoring procedure</h2>
+          <ol class="steps">
+            <li>
+              Open <b>Monitoring</b> and check that the header reads
+              <b>Camera connected</b> and <b>App ready</b>.
+            </li>
+            <li>
+              Check that the scene is correctly framed, illuminated and
+              unobstructed.
+            </li>
+            <li>
+              Present a known test object and look for the box label, confidence
+              and matching increase in the live quantity.
+            </li>
+            <li>
+              Use the model and class checkboxes to reduce on-screen clutter
+              without interrupting detection.
+            </li>
+            <li>
+              If the scene needs adjustment, ask an authorized engineer to
+              update the appropriate camera/model parameters, then reload.
+            </li>
+          </ol>
+          <h2>Stopping and resuming the camera</h2>
+          <p>
+            Select <b>Stop camera and detection</b> to stop camera acquisition
+            and inference; the app saves the preference and automatically
+            reloads. The display clears and the monitoring status changes to
+            stopped. Select <b>Resume camera and detection</b> to save enabled
+            state and automatically reload to resume operation. No extra
+            confirmation is normally required for these two buttons.
+          </p>
+          <div class="callout warn">
+            <b>Important:</b> Stop can be rejected during an active automatic
+            image-collection run or a pending manual capture. First stop
+            collection or complete the capture. An operation requested while a
+            model is running can briefly show status changes during reload.
+          </div>
+          <h2>Interpreting boxes and quantities</h2>
+          <p>
+            Confidence (for example <b>87%</b>) is the model’s reported
+            confidence for that particular detection, not a system-wide accuracy
+            guarantee. The right panel shows quantities for the
+            <b>current recognized scene</b>; it is not a production counter. A
+            short occlusion can produce a held detection that continues to
+            contribute to the quantity until holding time expires.
+          </p>
+          <figure class="figure">
+            <img
+              loading="lazy"
+              src="../assets/images/ui/monitoring_1.webp"
+              alt="Example: multiple detected industrial fasteners and their colored boxes"
+            />
+            <figcaption>
+              Example: multiple detected industrial fasteners and their colored
+              boxes — click to enlarge.
+            </figcaption>
+          </figure>
+          <figure class="figure">
+            <img
+              loading="lazy"
+              src="../assets/images/ui/monitoring_8.webp"
+              alt="Empty or waiting monitoring preview"
+            />
+            <figcaption>
+              Empty or waiting monitoring preview — click to enlarge.
+            </figcaption>
+          </figure>
+          <h2>If boxes do not appear</h2>
+          <p>
+            Verify the model is uploaded and <b>Enabled</b>, changes were
+            reloaded, confidence is reasonable, monitoring is running and the
+            DNN inference license is valid. If the image is present but no
+            objects are detected, test a known object in good light and check
+            the model matches the scene.
+          </p>
+          <div class="footnav">
+            <span>← <a href="how-it-works.html">How the System Works</a></span
+            ><span
+              ><a href="network-models.html">Network Models Page</a> →</span
+            >
+          </div>
+          <footer class="footer">
+            © SICK · Visionary AI Object Detection Monitoring · Application
+            v1.0.0 · Documentation v1.0.0.<br />
+          </footer>
+        </article>
+      </main>
+    </div>
+    <script src="../assets/js/manual.js"></script>
+  </body>
+</html>

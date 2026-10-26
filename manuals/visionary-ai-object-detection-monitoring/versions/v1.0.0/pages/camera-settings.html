@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      name="description"
+      content="SICK Visionary AI Object Detection Monitoring operator and application engineer manual v1.0.0"
+    />
+    <title>
+      Camera Settings · Visionary AI Object Detection Monitoring · SICK
+    </title>
+    <link
+      rel="icon"
+      type="image/webp"
+      href="../assets/images/brand/sick-s-logo.webp"
+    />
+    <link rel="stylesheet" href="../assets/css/manual.css" />
+  </head>
+  <body data-page="camera-settings.html">
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="brand">
+          <a href="../index.html"
+            ><img src="../assets/images/brand/sick-logo.svg" alt="SICK"
+          /></a>
+          <h1>Visionary AI Object Detection Monitoring</h1>
+          <p>End-User Manual · v1.0.0<br />Application · v1.0.0<br />SICK</p>
+        </div>
+        <nav class="nav" aria-label="Manual sections">
+          <div class="nav-group">Start here</div>
+          <a href="../index.html" data-current="index.html" class=""
+            >Overview & Quick Start</a
+          ><a href="how-it-works.html" data-current="how-it-works.html" class=""
+            >How the System Works</a
+          >
+          <div class="nav-group">Use the application</div>
+          <a href="monitoring.html" data-current="monitoring.html" class=""
+            >Monitoring Page</a
+          ><a
+            href="network-models.html"
+            data-current="network-models.html"
+            class=""
+            >Network Models Page</a
+          ><a
+            href="image-collection.html"
+            data-current="image-collection.html"
+            class=""
+            >Image Collection Page</a
+          ><a
+            href="log-monitoring.html"
+            data-current="log-monitoring.html"
+            class=""
+            >Log Monitoring Page</a
+          >
+          <div class="nav-group">Configure the application</div>
+          <a href="settings.html" data-current="settings.html" class=""
+            >Settings Overview & Backup</a
+          ><a
+            href="camera-settings.html"
+            data-current="camera-settings.html"
+            class="active"
+            >Camera Settings</a
+          ><a
+            href="live-streaming-settings.html"
+            data-current="live-streaming-settings.html"
+            class=""
+            >Live Streaming Settings</a
+          ><a
+            href="object-detection-settings.html"
+            data-current="object-detection-settings.html"
+            class=""
+            >Object Detection Settings</a
+          ><a
+            href="mqtt-settings.html"
+            data-current="mqtt-settings.html"
+            class=""
+            >MQTT Client Settings</a
+          ><a
+            href="logging-settings.html"
+            data-current="logging-settings.html"
+            class=""
+            >Logging Settings</a
+          ><a href="license.html" data-current="license.html" class=""
+            >License Manager</a
+          >
+          <div class="nav-group">External access & support</div>
+          <a href="integrations.html" data-current="integrations.html" class=""
+            >Integration & Data Outputs</a
+          ><a href="rest-api.html" data-current="rest-api.html" class=""
+            >REST API Reference</a
+          ><a
+            href="troubleshooting.html"
+            data-current="troubleshooting.html"
+            class=""
+            >Troubleshooting</a
+          ><a
+            href="quick-reference.html"
+            data-current="quick-reference.html"
+            class=""
+            >Quick Reference</a
+          >
+        </nav>
+      </aside>
+      <main class="main">
+        <header class="topbar">
+          <button class="mobile-menu" id="mobileMenu" type="button">
+            ☰ Menu
+          </button>
+          <div class="title">Camera Settings</div>
+          <div class="meta">Application v1.0.0 · Documentation v1.0.0</div>
+        </header>
+        <article class="content">
+          <div class="kicker">Settings → Camera</div>
+          <h1>Camera Settings</h1>
+          <p class="page-intro">
+            These options control the Visionary B-Two image acquisition used by
+            both preview and inference. Use the optimized settings as a starting
+            point and adjust only for the scene and lighting.
+          </p>
+          <figure class="figure">
+            <img
+              loading="lazy"
+              src="../assets/images/ui/camera-settings_1.webp"
+              alt="Camera Settings tab showing available camera parameters"
+            />
+            <figcaption>
+              Camera Settings tab showing available camera parameters — click to
+              enlarge.
+            </figcaption>
+          </figure>
+          <h2>Standard camera parameters</h2>
+          <table class="doc-table">
+            <thead>
+              <tr>
+                <th>Parameter</th>
+                <th>Meaning and optimized value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><b>Frames per second</b></td>
+                <td>
+                  Acquisition target FPS; editable range 1–30. Optimized
+                  <b>10 FPS</b>. Higher FPS does not imply a faster inference
+                  cycle and can raise camera workload.
+                </td>
+              </tr>
+              <tr>
+                <td><b>Acquisition mode</b></td>
+                <td>
+                  <b>HDR</b> helps accommodate bright/dark regions;
+                  <b>NORMAL</b> uses normal acquisition. Optimized <b>HDR</b>.
+                </td>
+              </tr>
+              <tr>
+                <td><b>Include depth map</b></td>
+                <td>
+                  Adds a depth map to camera acquisition when enabled. Optimized
+                  <b>Off</b>; version 1.0.0 does not use it for 3D object
+                  localization.
+                </td>
+              </tr>
+              <tr>
+                <td><b>Red gain</b></td>
+                <td>
+                  Red-channel amplification for white balance. Input 0–3.9;
+                  optimized 0.93615239.
+                </td>
+              </tr>
+              <tr>
+                <td><b>Green gain</b></td>
+                <td>Green-channel amplification; optimized 1.0.</td>
+              </tr>
+              <tr>
+                <td><b>Blue gain</b></td>
+                <td>Blue-channel amplification; optimized 1.02428192.</td>
+              </tr>
+              <tr>
+                <td><b>Auto exposure</b></td>
+                <td>
+                  Automatically adjusts exposure for lighting changes. Optimized
+                  <b>On</b>.
+                </td>
+              </tr>
+              <tr>
+                <td><b>Auto exposure sensitivity</b></td>
+                <td>
+                  Responsiveness/strength of auto-exposure adjustment, from 0.01
+                  to 1. Optimized 0.9.
+                </td>
+              </tr>
+              <tr>
+                <td><b>Auto exposure histogram center</b></td>
+                <td>
+                  Target center of brightness histogram used by the automatic
+                  exposure, 0–255. Optimized 90.
+                </td>
+              </tr>
+              <tr>
+                <td><b>Auto exposure center bins delta</b></td>
+                <td>
+                  Histogram window around the target center, 0–255. Optimized
+                  20.
+                </td>
+              </tr>
+              <tr>
+                <td><b>Depth validation</b></td>
+                <td>
+                  Applies camera depth-quality validation when enabled.
+                  Optimized <b>On</b>.
+                </td>
+              </tr>
+              <tr>
+                <td><b>Depth validation level</b></td>
+                <td>
+                  Depth-quality validation setting from −9 to +9. Optimized −3;
+                  adjust with camera expertise.
+                </td>
+              </tr>
+              <tr>
+                <td><b>Histogram equalization</b></td>
+                <td>
+                  Enhances image contrast using histogram equalization;
+                  optimized <b>On</b>.
+                </td>
+              </tr>
+              <tr>
+                <td><b>Histogram equalization averaging</b></td>
+                <td>
+                  Averaging mode associated with histogram equalization;
+                  optimized <b>Off</b>.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <h2>Advanced camera SDK overrides</h2>
+          <p>
+            The lower section exposes additional camera SDK controls. Overrides
+            are opt-in: enabling one can override a normal setting and
+            potentially conflict with another enabled method. The UI blocks a
+            detected conflicting configuration.
+          </p>
+          <figure class="figure">
+            <img
+              loading="lazy"
+              src="../assets/images/ui/camera-settings_2.webp"
+              alt="Advanced camera options and SDK overrides"
+            />
+            <figcaption>
+              Advanced camera options and SDK overrides — click to enlarge.
+            </figcaption>
+          </figure>
+          <figure class="figure">
+            <img
+              loading="lazy"
+              src="../assets/images/ui/camera-settings_3.webp"
+              alt="Camera controls continued"
+            />
+            <figcaption>
+              Camera controls continued — click to enlarge.
+            </figcaption>
+          </figure>
+          <figure class="figure">
+            <img
+              loading="lazy"
+              src="../assets/images/ui/camera-settings_4.webp"
+              alt="Additional camera SDK controls"
+            />
+            <figcaption>
+              Additional camera SDK controls — click to enlarge.
+            </figcaption>
+          </figure>
+          <h2>Safe adjustment procedure</h2>
+          <ol class="steps">
+            <li>Export the current settings backup.</li>
+            <li>
+              Keep HDR and auto exposure enabled initially and verify normal
+              image brightness in Monitoring.
+            </li>
+            <li>
+              If colors or brightness are wrong, adjust one standard parameter
+              at a time, save and reload; check the image with an unchanged
+              target scene.
+            </li>
+            <li>
+              Only use advanced SDK overrides when the parameter meaning is
+              confirmed for the device firmware.
+            </li>
+            <li>
+              If image acquisition stops after a change, restore camera defaults
+              or re-import the previous good backup.
+            </li>
+          </ol>
+          <div class="callout warn">
+            <b
+              >Do not enable depth processing just to obtain 3D object
+              positions.</b
+            >
+            The version 1.0.0 detection output uses normalized
+            <b>2D</b> bounding boxes only.
+          </div>
+          <div class="footnav">
+            <span
+              >←
+              <a href="settings.html">Settings Overview &amp; Backup</a></span
+            ><span
+              ><a href="live-streaming-settings.html"
+                >Live Streaming Settings</a
+              >
+              →</span
+            >
+          </div>
+          <footer class="footer">
+            © SICK · Visionary AI Object Detection Monitoring · Application
+            v1.0.0 · Documentation v1.0.0.<br />
+          </footer>
+        </article>
+      </main>
+    </div>
+    <script src="../assets/js/manual.js"></script>
+  </body>
+</html>
